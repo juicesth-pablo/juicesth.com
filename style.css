@@ -1,0 +1,326 @@
+/* =========================================================
+   STYLE.CSS 目錄
+   ---------------------------------------------------------
+   00  目錄（本區）
+   01  Design Tokens（:root 變數）
+   02  全域基底（reset / base）
+   03  背景層（流動漸變 + 顆粒）
+   —— 以下之後陸續補上 ——
+   04  版面容器（wrap / gutter）
+   05  導覽列 nav
+   06  首頁 hero
+   07  playlist 網格 gallery
+   08  頁尾 footer strip
+   09  playlist 內頁
+   10  View Transitions 頁面切換
+   ========================================================= */
+
+
+/* =========================================================
+   01  DESIGN TOKENS
+   —— 顏色、字體、間距全部集中在這；改一處全站生效 ——
+   ========================================================= */
+
+:root {
+
+    /* --- 顏色：用「空格分隔的 RGB」存原始值，方便之後加透明度 --- */
+    /* 例：rgb(var(--c-ink-rgb) / .6) 就能拿到 60% 透明的墨色 */
+    --c-ink-rgb: 28 28 24;         /* 溫黑（文字） */
+    --c-paper-rgb: 243 241 231;    /* 米白（背景） */
+    --c-accent-rgb: 144 153 100;   /* 主色：橄欖綠 #909964 */
+
+    /* 語意化顏色（實際使用這幾個，不要直接用上面的 -rgb） */
+    --c-ink: rgb(var(--c-ink-rgb));
+    --c-paper: rgb(var(--c-paper-rgb));
+    --c-accent: rgb(var(--c-accent-rgb));
+    --c-accent-deep: rgb(114 122 74);            /* 主色加深，hover 用 */
+    --c-muted: rgb(var(--c-ink-rgb) / .62);      /* 次要文字 */
+    --c-line: rgb(var(--c-ink-rgb) / .14);       /* 分隔線 / 邊框 */
+
+    /* --- 字體：先用系統字代用，之後換 webfont 只改這兩行 --- */
+    /* 建議之後：display 換 grotesque（如 Space Grotesk / Anton）；body 換 Inter */
+    --ff-display: "Helvetica Neue", "Arial Narrow", Arial, sans-serif;
+    --ff-body: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    /* --- 字級：clamp 流動縮放（最小 → 隨 vw 放大 → 觸頂維持） --- */
+    --fs-100: clamp(0.8rem, 0.77rem + 0.15vw, 0.875rem);    /* caption / 小標 */
+    --fs-200: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);      /* 內文 */
+    --fs-300: clamp(1.25rem, 1.1rem + 0.75vw, 1.75rem);     /* 小標題 */
+    --fs-400: clamp(1.75rem, 1.3rem + 2.2vw, 3rem);         /* 區塊標題 h2 */
+    --fs-display: clamp(3rem, 1.5rem + 7.5vw, 9rem);        /* hero 大字 */
+
+    /* --- 間距：固定微間距（不隨螢幕縮放） --- */
+    --space-2xs: 0.25rem;   /* 4px */
+    --space-xs: 0.5rem;     /* 8px */
+    --space-sm: 0.75rem;    /* 12px */
+    --space-md: 1rem;       /* 16px */
+
+    /* --- 間距：流動間距（隨 vw 等比縮放；一條 clamp 吃桌機＋手機） --- */
+    --space-lg: clamp(1.5rem, 4vw, 2.5rem);
+    --space-xl: clamp(2rem, 6vw, 4rem);
+    --space-2xl: clamp(3rem, 8vw, 6rem);
+    --space-3xl: clamp(4rem, 10vw, 8rem);
+
+    /* --- 版面 --- */
+    --wrap-max: 1600px;                      /* 內容最大寬 */
+    --gutter: clamp(1.25rem, 4vw, 4rem);     /* 頁面左右留白 */
+    --radius: 2px;                           /* editorial 偏方正，圓角很小 */
+
+    /* --- 動畫 --- */
+    --ease-out: cubic-bezier(.22, 1, .36, 1);   /* 全站慣用緩動 */
+    --dur: 0.6s;                                /* 頁面切換 / 主要動效時長 */
+
+    /* --- 背景：流動漸變 + 顆粒（03 章用） --- */
+    --bg-1: rgb(206 212 184);            /* 最亮：淺鼠尾草 */
+    --bg-2: rgb(144 153 100);            /* 主色橄欖 */
+    --bg-3: rgb(96 104 74);              /* 中深橄欖 */
+    --bg-4: rgb(52 56 44);               /* 最深：墨橄欖（右下暗角） */
+
+    --bg-drift: 5s;                     /* 漂移週期：越大越慢越優雅 */
+    --bg-blur: clamp(40px, 9vw, 120px);  /* 模糊量：越大越像霧、色團融得越勻 */
+    --grain-opacity: 0.16;               /* 顆粒濃度：0 = 全無，0.2 = 很明顯 */
+
+    --grain-drift: 9s;    /* 顆粒游動週期：越大越慢、越「微微」 */
+}
+
+
+/* =========================================================
+   02  全域基底（reset / base）
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background-color: var(--c-paper);
+    color: var(--c-ink);
+    font-family: var(--ff-body);
+    font-size: var(--fs-200);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+/* 標題預設用 display 字體、行高收緊、字距微縮（雜誌大字感） */
+h1,
+h2,
+h3 {
+    margin: 0;
+    font-family: var(--ff-display);
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+}
+
+p {
+    margin: 0;
+}
+
+/* 圖片 / 影片一律 block，避免底部空隙；不超出容器 */
+img,
+video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* 選取顏色帶主色 */
+::selection {
+    background-color: rgb(var(--c-accent-rgb) / .3);
+}
+
+/* 尊重系統「減少動態」偏好：全站動畫幾乎關閉 */
+@media (prefers-reduced-motion: reduce) {
+
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
+}
+
+
+/* =========================================================
+   03  背景層（流動漸變 + 顆粒）
+   —— 固定滿版；幾顆大色團緩慢漂移，一次性模糊融成 mesh；
+      上面蓋 SVG 顆粒。內容用 z-index 浮在它之上 ——
+   ========================================================= */
+
+/* 背景容器：釘滿整個視窗，沉在內容底下 */
+.bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    /* 打底斜向漸變：左上亮 → 右下暗（呼應 reference） */
+    background: linear-gradient(105deg, var(--bg-1), var(--bg-3) 55%, var(--bg-4));
+}
+
+/* 色團群組：整組只做「一次」模糊，比每顆各自模糊省效能 */
+.bg__blobs {
+    position: absolute;
+    inset: 0;
+    filter: blur(var(--bg-blur));
+}
+
+/* 單顆色團：用 radial-gradient 讓邊緣自然淡出 */
+.bg__blob {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at center, currentColor, transparent 70%);
+    will-change: transform;
+}
+
+/* 色團 1：淺色，左上，最大顆 */
+.bg__blob--1 {
+    top: -20%;
+    left: -10%;
+    width: 65vmax;
+    height: 65vmax;
+    color: var(--bg-1);
+    animation: bgDriftA var(--bg-drift) ease-in-out infinite alternate;
+}
+
+/* 色團 2：主色橄欖，中右 */
+.bg__blob--2 {
+    top: 5%;
+    right: -15%;
+    width: 55vmax;
+    height: 55vmax;
+    color: var(--bg-2);
+    animation: bgDriftB calc(var(--bg-drift) * 1.25) ease-in-out infinite alternate;
+}
+
+/* 色團 3：中深，左下 */
+.bg__blob--3 {
+    bottom: -25%;
+    left: -5%;
+    width: 60vmax;
+    height: 60vmax;
+    color: var(--bg-3);
+    animation: bgDriftC calc(var(--bg-drift) * 1.5) ease-in-out infinite alternate;
+}
+
+/* 色團 4：最深，右下暗角，增加景深 */
+.bg__blob--4 {
+    bottom: -20%;
+    right: -20%;
+    width: 50vmax;
+    height: 50vmax;
+    color: var(--bg-4);
+    animation: bgDriftD calc(var(--bg-drift) * 1.1) ease-in-out infinite alternate;
+}
+
+/* 顆粒層：SVG feTurbulence 雜訊，用 soft-light 疊在色團上；緩慢微幅游動 */
+.bg__grain {
+    position: absolute;
+    inset: -6%;                  /* 外擴一點，位移時不會露出邊緣 */
+    opacity: var(--grain-opacity);
+    mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='160'%20height='160'%3E%3Cfilter%20id='n'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='1.8'%20numOctaves='2'%20stitchTiles='stitch'/%3E%3C/filter%3E%3Crect%20width='100%25'%20height='100%25'%20filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 160px 160px;
+    will-change: transform;
+    animation: grainDrift var(--grain-drift) ease-in-out infinite;
+}
+
+/* 內容浮在背景之上 */
+main {
+    position: relative;
+    z-index: 1;
+}
+
+/* 分頁被切走時，色團與顆粒一起暫停（省電，由 main.js 加上 .is-paused） */
+.bg.is-paused .bg__blob,
+.bg.is-paused .bg__grain {
+    animation-play-state: paused;
+}
+
+/* 色團漂移路徑：各自不同，避免同步、才有「自然流動」感 */
+@keyframes bgDriftA {
+
+    from {
+        transform: translate(0, 0) scale(1);
+    }
+
+    to {
+        transform: translate(8%, 6%) scale(1.15);
+    }
+}
+
+@keyframes bgDriftB {
+
+    from {
+        transform: translate(0, 0) scale(1.1);
+    }
+
+    to {
+        transform: translate(-10%, 8%) scale(1);
+    }
+}
+
+@keyframes bgDriftC {
+
+    from {
+        transform: translate(0, 0) scale(1);
+    }
+
+    to {
+        transform: translate(6%, -8%) scale(1.2);
+    }
+}
+
+@keyframes bgDriftD {
+
+    from {
+        transform: translate(0, 0) scale(1.05);
+    }
+
+    to {
+        transform: translate(-8%, -6%) scale(1.15);
+    }
+}
+
+/* 顆粒游動：小幅度、繞一小圈回原點（用 % 相對自身尺寸，幅度很小） */
+@keyframes grainDrift {
+
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+
+    25% {
+        transform: translate3d(-1.5%, -1%, 0);
+    }
+
+    50% {
+        transform: translate3d(1%, -1.8%, 0);
+    }
+
+    75% {
+        transform: translate3d(-0.8%, 1.2%, 0);
+    }
+
+    100% {
+        transform: translate3d(0, 0, 0);
+    }
+}
