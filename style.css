@@ -81,6 +81,7 @@
     --ease-out: cubic-bezier(.22, 1, .36, 1);
     --dur: 0.6s;                             /* hover / 小動效 */
     --slide-dur: 1.0s;                       /* 面板左右滑動時長（越大越滑順） */
+    --player-swap: 0.65s;   /* volume 切換的滑動時長 */
 
     /* --- 背景：流動漸變 + 顆粒 --- */
     --bg-1: rgb(206 212 184);
@@ -609,17 +610,69 @@ img, video {
 }
 
 /* 右欄：填滿整欄高度 */
+/* 播放器容器：定位基準 + 裁切溢出，讓 iframe 能滑進滑出 */
 .detail__player {
     min-width: 0;
+    position: relative;
     height: 100%;
+    overflow: visible;   /* 放開裁切，讓 iframe 滑到頁面外才被裁 */
 }
 
+/* iframe 絕對填滿容器（切換時才好做位移動畫） */
 .detail__player iframe {
-    display: block;
+    position: absolute;
+    inset: 0;
     width: 100%;
-    height: 100%;       /* 高度＝左欄高度 */
+    height: 100%;
     border: 0;
     border-radius: 12px;
+    background-color: #121212;
+    will-change: transform;
+}
+
+/* 切換：舊的往上滑走、新的從下面滑上來 */
+.detail__player iframe.is-leaving {
+    animation: playerOut var(--player-swap) var(--ease-out) forwards;
+}
+
+.detail__player iframe.is-entering {
+    animation: playerIn var(--player-swap) var(--ease-out) forwards;
+}
+
+@keyframes playerOut {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-100vh);
+    }
+}
+
+@keyframes playerIn {
+    from {
+        transform: translateY(100vh);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes playerOutX {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(100vw);
+    }
+}
+
+@keyframes playerInX {
+    from {
+        transform: translateX(-100vw);
+    }
+    to {
+        transform: translateX(0);
+    }
 }
 
 /* 下拉選單：桌機隱藏（用左側列表），手機才顯示 */
@@ -722,17 +775,12 @@ img, video {
         overflow-y: auto;
     }
 
-    /* 播放器移到最上、拉長 */
     .detail__player {
         order: -1;
-        height: auto;
+        height: 340px;   /* 原本是 height: auto；改成定高 */
     }
 
-    .detail__player iframe {
-        height: 420px;   /* 播放器高度（拉長） */
-    }
-
-        /* 手機：改用下拉選單，隱藏列表 */
+    /* 手機：改用下拉選單，隱藏列表 */
     .detail__list {
         display: none;
     }
@@ -763,5 +811,15 @@ img, video {
         background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='12'%20height='8'%3E%3Cpath%20d='M1%201l5%205%205-5'%20fill='none'%20stroke='%231c1c18'%20stroke-width='1.5'/%3E%3C/svg%3E");
         background-repeat: no-repeat;
         background-position: right var(--space-md) center;
+    }
+
+
+    /* 手機：播放器改成水平滑動（舊往右出、新從左進） */
+    .detail__player iframe.is-leaving {
+        animation-name: playerOutX;
+    }
+
+    .detail__player iframe.is-entering {
+        animation-name: playerInX;
     }
 }

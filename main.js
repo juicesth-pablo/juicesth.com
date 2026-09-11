@@ -199,12 +199,34 @@ function cleanPlaylistId(idOrUrl) {
 
 // 注入 Spotify 播放器
 function renderPlayer(title, spotifyId) {
-    const id = cleanPlaylistId(spotifyId);   // 吃「純ID / 帶?si= / 完整分享連結」都行
-    playerEl.innerHTML =
-        '<iframe src="https://open.spotify.com/embed/playlist/' + id + '?utm_source=generator" ' +
-        'width="100%" height="480" loading="lazy" ' +
-        'allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" ' +
-        'title="Spotify 播放器：' + title + '"></iframe>';
+    const id = cleanPlaylistId(spotifyId);
+
+    // 建立並滑入新的播放器
+    function mountNew() {
+        const iframe = document.createElement("iframe");
+        iframe.src = "https://open.spotify.com/embed/playlist/" + id + "?utm_source=generator";
+        iframe.setAttribute("allow", "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture");
+        iframe.loading = "lazy";
+        iframe.title = "Spotify 播放器：" + title;
+        iframe.className = "is-entering";
+        iframe.addEventListener("animationend", function () {
+            iframe.classList.remove("is-entering");
+        }, { once: true });
+        playerEl.appendChild(iframe);
+    }
+
+    const old = playerEl.querySelector("iframe");
+    if (old) {
+        old.classList.remove("is-entering");
+        old.classList.add("is-leaving");
+        // 舊的完全滑出後，新的才滑進來
+        old.addEventListener("animationend", function () {
+            old.remove();
+            mountNew();
+        }, { once: true });
+    } else {
+        mountNew();
+    }
 }
 
 /* —— 首頁背景隨封面變色 —— */
