@@ -74,7 +74,7 @@
     --gutter: clamp(1.25rem, 4vw, 4rem);
     --nav-h: clamp(3.5rem, 8vh, 5.5rem);     /* 面板頂部留白＝導覽列高度 */
     --pill-h: clamp(2.6rem, 4.5vw, 3.4rem);   /* 導覽泡泡高度（越大越大顆） */
-    --radius: 2px;
+    --radius: 5px;
     --page-max: 720px;     /* 內頁容器最大寬（各頁一致） */
 
     /* --- 動畫 --- */
