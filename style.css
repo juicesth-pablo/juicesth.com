@@ -667,7 +667,7 @@ img, video {
    —— 系列牆改單欄上下捲動；內頁改上下堆疊 ——
    ========================================================= */
 
-@media (max-width: 700px) {
+@media (max-width: 700px) {  
     /* 系列牆：一次一張、上下滑動吸附翻頁 */
     .scatter {
         display: flex;
@@ -713,22 +713,20 @@ img, video {
         overflow-y: auto;
     }
 
-    /* 播放器移到最上、捲動時釘住 */
+    /* 播放器移到最上、拉長 */
     .detail__player {
         order: -1;
         height: auto;
-        position: sticky;
-        top: 0;
-        z-index: 1;
     }
 
     .detail__player iframe {
-        height: 152px;   /* 手機用精簡高度的播放器 */
+        height: 340px;   /* 播放器高度（拉長） */
     }
 
-    /* 列表恢復正常高度，跟著整區捲（不再自己捲） */
+    /* Volume 列表：一次最多約 4 行，超過就在列表內捲動 */
     .detail__list {
         height: auto;
-        overflow: visible;
+        max-height: 15rem;
+        overflow-y: auto;
     }
 }
