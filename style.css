@@ -60,9 +60,13 @@
     --space-sm: 0.75rem;
     --space-md: 1rem;
 
-    /* --- 間距：流動間距 --- */
-    --space-lg: clamp(1.5rem, 4vw, 2.5rem);
-    --space-xl: clamp(2rem, 6vw, 4rem);
+    /* --- 間距：全部隨螢幕等比縮放（clamp；最小 < 最大） --- */
+    --space-2xs: clamp(0.25rem, 0.6vw, 0.5rem);      /* 4 → 8px */
+    --space-xs:  clamp(0.5rem, 1.2vw, 0.75rem);      /* 8 → 12px */
+    --space-sm:  clamp(0.75rem, 1.8vw, 1.125rem);    /* 12 → 18px */
+    --space-md:  clamp(1rem, 2.4vw, 1.5rem);         /* 16 → 24px */
+    --space-lg:  clamp(1.5rem, 4vw, 2.5rem);
+    --space-xl:  clamp(2rem, 6vw, 4rem);
     --space-2xl: clamp(3rem, 8vw, 6rem);
     --space-3xl: clamp(4rem, 10vw, 8rem);
 
@@ -725,7 +729,7 @@ img, video {
     }
 
     .detail__player iframe {
-        height: 400px;   /* 播放器高度（拉長） */
+        height: 500px;   /* 播放器高度（拉長） */
     }
 
         /* 手機：改用下拉選單，隱藏列表 */
@@ -736,8 +740,9 @@ img, video {
     .detail__select {
         display: block;
         order: 0;
-        width: 35%;
-        margin-left: auto;                        /* 置中 */
+        width: 40%;
+        margin-left: auto;                        /* 靠右 */
+        margin-top: var(--space-sm);   /* 往下移；數值越大離播放器越遠 */
         text-align: left;
         height: var(--pill-h);                      /* 與導覽泡泡同高 */
         padding: 0 var(--space-sm) 0 var(--space-lg);
