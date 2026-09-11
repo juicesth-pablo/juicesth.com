@@ -736,13 +736,14 @@ img, video {
     .detail__select {
         display: block;
         order: 0;
-        width: 100%;
-        padding: var(--space-sm) var(--space-xl) var(--space-sm) var(--space-md);
+        width: 40%;
+        padding: var(--space-2xs) var(--space-xl) var(--space-sm) var(--space-md);
         border: 1px solid rgb(255 255 255 / .35);
         border-radius: 999px;
         color: var(--c-ink);
         font-family: var(--ff-display);
-        font-size: var(--fs-200);
+        font-size: var(--fs-100);
+        margin-left: auto;
         /* 玻璃底（與導覽泡泡一致） */
         background-color: rgb(255 255 255 / .16);
         box-shadow: 0 6px 24px rgb(0 0 0 / .12), inset 0 1px 0 rgb(255 255 255 / .5);
