@@ -424,3 +424,20 @@ if (bgEl) {
         bgEl.classList.toggle("is-paused", document.hidden);
     });
 }
+
+
+/* —— 導覽 + 泡泡：點一下展開 / 收合（觸控用） —— */
+const menuEl = document.querySelector(".menu");
+if (menuEl) {
+    const plusEl = menuEl.querySelector(".menu__plus");
+    plusEl.addEventListener("click", function (e) {
+        e.stopPropagation();
+        menuEl.classList.toggle("is-open");
+    });
+    // 點泡泡以外的地方就收合
+    document.addEventListener("click", function (e) {
+        if (!menuEl.contains(e.target)) {
+            menuEl.classList.remove("is-open");
+        }
+    });
+}

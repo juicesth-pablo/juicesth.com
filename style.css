@@ -9,6 +9,7 @@
    05  舞台 / 軌道 / 面板（水平滑動）
    06  系列牆 scatter（面板 0）
    07  面板頭部 + Volume、播放器內頁（面板 1）
+   08  手機版（RWD）
 ========================================================= */
 
 
@@ -399,6 +400,17 @@ img, video {
     transform: rotate(45deg);
 }
 
+/* 觸控裝置：點一下展開（沒有 hover 時的備援） */
+.menu.is-open .menu__links {
+    max-width: 30ch;
+    padding-right: var(--space-lg);
+    opacity: 1;
+}
+
+.menu.is-open .menu__plus {
+    transform: rotate(45deg);
+}
+
 /* 連結：收合時寬 0，展開向右露出 */
 .menu__links {
     display: flex;
@@ -647,4 +659,76 @@ img, video {
     font-size: var(--fs-100);
     letter-spacing: 0.08em;
     color: var(--c-muted);
+}
+
+
+/* =========================================================
+   08  手機版（RWD）
+   —— 系列牆改單欄上下捲動；內頁改上下堆疊 ——
+   ========================================================= */
+
+@media (max-width: 700px) {
+    /* 系列牆：一次一張、上下滑動吸附翻頁 */
+    .scatter {
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        scroll-snap-type: y mandatory;   /* 開啟吸附 */
+        padding-inline: var(--gutter);
+    }
+
+    /* 每張封面：佔滿一個可視高度、置中；一滑只跳一張 */
+    .series {
+        position: static;
+        width: 100%;
+        min-height: 100%;
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        scroll-snap-align: center;
+        scroll-snap-stop: always;   /* 一次滑動只前進一張，不會連跳 */
+    }
+
+    /* 封面實際大小（不佔滿整個高度，只置中在畫面中央） */
+    .series__cover {
+        width: 240px;
+        max-width: 80%;
+    }
+
+    /* 手機：只留封面，隱藏系列名稱 */
+    .series__label {
+        display: none;
+    }
+
+    /* 手機不需要 hover 放大 */
+    .series:hover .series__cover {
+        transform: none;
+    }
+
+    /* 內頁：兩欄 → 單欄，整區一起捲 */
+    .detail {
+        grid-template-columns: 1fr;
+        gap: var(--space-lg);
+        overflow-y: auto;
+    }
+
+    /* 播放器移到最上、捲動時釘住 */
+    .detail__player {
+        order: -1;
+        height: auto;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    .detail__player iframe {
+        height: 152px;   /* 手機用精簡高度的播放器 */
+    }
+
+    /* 列表恢復正常高度，跟著整區捲（不再自己捲） */
+    .detail__list {
+        height: auto;
+        overflow: visible;
+    }
 }
