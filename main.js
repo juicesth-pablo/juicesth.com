@@ -16,9 +16,9 @@ const SERIES = [
         title: "wavy",
         cover: "url(images/wavy.webp) center/cover",
         volumes: [
-            { title: "Vol. 1 — Nightcall", meta: "32 tracks", spotify: "096fjisZoDUSwSpAJrswnX" },
-            { title: "Vol. 2 — Neon", meta: "28 tracks", spotify: "PLAYLIST_ID" },
-            { title: "Vol. 3 — Afterglow", meta: "24 tracks", spotify: "PLAYLIST_ID" }
+            { title: "Vol. 1", meta: "10 tracks", spotify: "1LfXvRTxAF8tXRrhVWHT59" },
+            { title: "Vol. 2", meta: "10 tracks", spotify: "62cXCEmsdH4Hld4TXKiBxN" },
+            { title: "Vol. 3", meta: "10 tracks", spotify: "4YH6kA5i4ARlqmVtBiWFDm" }
         ]
     },
     {
@@ -26,15 +26,15 @@ const SERIES = [
         title: "mellow bars",
         cover: "url(images/mellow-bars.webp) center/cover",
         volumes: [
-            { title: "Vol. 1", meta: "10 tracks", spotify: "https://open.spotify.com/playlist/6fxGOLkUeroXa5b9LBdJaP?si=847b0e5974bf4742" },
-            { title: "Vol. 2", meta: "10 tracks", spotify: "https://open.spotify.com/playlist/56dkNieDonnb7tqOMNmZBF?si=38b8eb7914044a48" },
-            { title: "Vol. 3", meta: "10 tracks", spotify: "https://open.spotify.com/playlist/4TEIWRetVbO5J9fMJr68w7?si=c1812b302dae4ee2" },
-            { title: "Vol. 4", meta: "10 tracks", spotify: "https://open.spotify.com/playlist/2vmE4jAnGgQ76nw5pbFR52?si=4007cefb0fa24343" },
-            { title: "Vol. 5", meta: "10 tracks", spotify: "https://open.spotify.com/playlist/0ezMxUDf356GSV7CIa7tDk?si=62f2ff5d08d749ea" },
-            { title: "Vol. 6", meta: "10 tracks", spotify: "https://open.spotify.com/playlist/3y0W2onJmuMYq6mffo2Xwb?si=aee73f85b63242ff" },
-            { title: "Vol. 7", meta: "10 tracks", spotify: "https://open.spotify.com/playlist/39YFGNcfTPAeyXgvVCMtgG?si=e55456628b7e4e81" },
-            { title: "Vol. 8", meta: "10 tracks", spotify: "https://open.spotify.com/playlist/6zayQDaTx1bE1CGqDEIvIr?si=a0368bc6cde643ec" },
-            { title: "Vol. 9", meta: "10 tracks", spotify: "https://open.spotify.com/playlist/4OlY9DzwVk9ml8x6uhTv4p?si=90a45c0ccd4c42f7" }
+            { title: "Vol. 1", meta: "10 tracks", spotify: "6fxGOLkUeroXa5b9LBdJaP" },
+            { title: "Vol. 2", meta: "10 tracks", spotify: "56dkNieDonnb7tqOMNmZBF" },
+            { title: "Vol. 3", meta: "10 tracks", spotify: "4TEIWRetVbO5J9fMJr68w7" },
+            { title: "Vol. 4", meta: "10 tracks", spotify: "2vmE4jAnGgQ76nw5pbFR52" },
+            { title: "Vol. 5", meta: "10 tracks", spotify: "0ezMxUDf356GSV7CIa7tDk" },
+            { title: "Vol. 6", meta: "10 tracks", spotify: "3y0W2onJmuMYq6mffo2Xwb" },
+            { title: "Vol. 7", meta: "10 tracks", spotify: "39YFGNcfTPAeyXgvVCMtgG" },
+            { title: "Vol. 8", meta: "10 tracks", spotify: "6zayQDaTx1bE1CGqDEIvIr" },
+            { title: "Vol. 9", meta: "10 tracks", spotify: "4OlY9DzwVk9ml8x6uhTv4p" }
         ]
     },
     {
@@ -42,7 +42,7 @@ const SERIES = [
         title: "summer jam mixtape",
         cover: "url(images/summer-jam-mixtape.webp) center/cover",
         volumes: [
-            { title: "Vol. 1 — Rooftop", meta: "18 tracks", spotify: "PLAYLIST_ID" }
+            { title: "Vol. 1", meta: "10 tracks", spotify: "1auHxB3sJpK2stmkZtAFXC" }
         ]
     },
     {
@@ -51,7 +51,7 @@ const SERIES = [
         cover: "url(images/flying-melodies.webp) center/cover",
         volumes: [
             { title: "Vol. 1", meta: "10 tracks", spotify: "1OMuKzoymTfBg1dDIH6sAT" },
-            { title: "Vol. 2 — Sunrise", meta: "26 tracks", spotify: "PLAYLIST_ID" }
+            { title: "Vol. 2", meta: "10 tracks", spotify: "2ikcNC0TZMJv9lGHXiMN7f" }
         ]
     }
 ];
@@ -62,7 +62,6 @@ const scatterEl = document.getElementById("scatter");
 const volumesEl = document.getElementById("volumes");
 const playerEl = document.getElementById("player");
 const seriesTitleEl = document.getElementById("seriesTitle");
-const volumeTitleEl = document.getElementById("volumeTitle");
 const bgEl = document.querySelector(".bg");
 
 // 固定亂數種子：每次載入位置都一樣。改這個數字可「整體重新洗牌」一次。
@@ -148,8 +147,9 @@ function renderScatter() {
     });
 }
 
-// 依系列建立 Volume 列表
-function renderVolumes(series) {
+// 內頁：建立左側 Volume 列表，並載入指定 volume 到右側播放器
+function renderDetail(series, index) {
+    currentSeries = series;
     seriesTitleEl.textContent = series.title;
     volumesEl.innerHTML = "";
     series.volumes.forEach(function (vol, i) {
@@ -157,7 +157,6 @@ function renderVolumes(series) {
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "volume";
-        btn.dataset.series = series.id;
         btn.dataset.index = i;
         btn.innerHTML =
             '<span class="volume__index">' + num + '</span>' +
@@ -165,6 +164,20 @@ function renderVolumes(series) {
             '<span class="volume__meta">' + (vol.meta || "") + '</span>';
         volumesEl.appendChild(btn);
     });
+    setActiveVolume(index || 0);
+}
+
+// 切換右側播放器 + 標示選中的 volume
+function setActiveVolume(index) {
+    if (!currentSeries) {
+        return;
+    }
+    const i = currentSeries.volumes[index] ? index : 0;
+    Array.prototype.forEach.call(volumesEl.children, function (btn, k) {
+        btn.classList.toggle("is-active", k === i);
+    });
+    const vol = currentSeries.volumes[i];
+    renderPlayer(vol.title, vol.spotify);
 }
 
 // 從「純ID / 帶?si= / 完整分享連結」取出乾淨的 playlist ID
@@ -176,13 +189,12 @@ function cleanPlaylistId(idOrUrl) {
 
 // 注入 Spotify 播放器
 function renderPlayer(title, spotifyId) {
-    const id = cleanPlaylistId(spotifyId);
-    volumeTitleEl.textContent = title;
+    const id = cleanPlaylistId(spotifyId);   // 吃「純ID / 帶?si= / 完整分享連結」都行
     playerEl.innerHTML =
         '<iframe src="https://open.spotify.com/embed/playlist/' + id + '?utm_source=generator" ' +
         'width="100%" height="480" loading="lazy" ' +
         'allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" ' +
-        'title="Spotify 播放器"></iframe>';
+        'title="Spotify 播放器：' + title + '"></iframe>';
 }
 
 /* —— 首頁背景隨封面變色 —— */
@@ -283,6 +295,7 @@ function clearPalette() {
 }
 
 let committedSeriesId = null;   // 已進入的系列（決定內頁底色）
+let currentSeries = null;   // 目前開啟的系列
 
 // 依目前狀態還原底色：內頁 → 該系列主題色；首頁 → 預設
 function syncPalette() {
@@ -310,8 +323,9 @@ function updatePanels() {
 function setLevel(n) {
     level = n;
     track.style.setProperty("--level", n);
-    if (n < 2) {
-        playerEl.innerHTML = "";     // 離開播放器 → 停播
+    if (n === 0) {
+        playerEl.innerHTML = "";
+        currentSeries = null;
     }
     if (document.activeElement && document.activeElement.blur) {
         document.activeElement.blur();
@@ -332,27 +346,16 @@ function parseHash() {
     if (!series) {
         return { level: 0 };
     }
-    if (parts.length >= 2) {
-        const idx = parseInt(parts[1], 10);
-        if (series.volumes[idx]) {
-            return { level: 2, series: series, index: idx };
-        }
-        return { level: 1, series: series };
-    }
-    return { level: 1, series: series };
+    const idx = parts.length >= 2 ? parseInt(parts[1], 10) : 0;
+    return { level: 1, series: series, index: idx >= 0 ? idx : 0 };
 }
 
-// 依 hash 還原畫面；instant=true 時首次載入不播滑動動畫（避免一進來就大滑一段）
 function applyRoute(instant) {
     const r = parseHash();
-    if (r.level >= 1) {
-        renderVolumes(r.series);
+    if (r.level === 1) {
+        renderDetail(r.series, r.index);
     }
-    if (r.level === 2) {
-        const vol = r.series.volumes[r.index];
-        renderPlayer(vol.title, vol.spotify);
-    }
-    committedSeriesId = (r.level >= 1) ? r.series.id : null;   // 內頁鎖該系列色、首頁還原預設
+    committedSeriesId = (r.level === 1) ? r.series.id : null;
     syncPalette();
     if (instant) {
         track.style.transition = "none";
@@ -380,9 +383,13 @@ scatterEl.addEventListener("click", function (e) {
 // 點 Volume → 寫入 hash
 volumesEl.addEventListener("click", function (e) {
     const btn = e.target.closest(".volume");
-    if (btn) {
-        location.hash = btn.dataset.series + "/" + btn.dataset.index;
+    if (!btn || !currentSeries) {
+        return;
     }
+    const i = parseInt(btn.dataset.index, 10);
+    setActiveVolume(i);
+    // 記住選到的 volume（reload / 分享用），但不新增歷史 → 返回仍直接回系列牆
+    history.replaceState(history.state, "", "#" + currentSeries.id + "/" + i);
 });
 
 // ← 返回鍵、品牌回首頁：一律走瀏覽器歷史

@@ -8,8 +8,7 @@
    04  導覽列 nav
    05  舞台 / 軌道 / 面板（水平滑動）
    06  系列牆 scatter（面板 0）
-   07  面板頭部 + Volume 列表（面板 1）
-   08  播放器（面板 2）
+   07  面板頭部 + Volume、播放器內頁（面板 1）
    ========================================================= */
 
 
@@ -448,8 +447,9 @@ img, video {
     flex: 0 0 100%;
     height: 100%;
     padding-top: var(--nav-h);
-    overflow-y: auto;
-    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;   /* 頁面本身不捲動，捲動交給內部 */
 }
 
 
@@ -461,7 +461,8 @@ img, video {
 .scatter {
     position: relative;
     width: 100%;
-    height: 100%;
+    flex: 1;
+    min-height: 0;
 }
 
 /* 單一系列封面：正擺；位置與尺寸由 JS 自動排版（防重疊） */
@@ -528,17 +529,16 @@ img, video {
 
 
 /* =========================================================
-   07  面板頭部 + Volume 列表（面板 1）
-   —— 與播放器共用同一容器寬度，頁面間對齊一致 ——
+   07  內頁：Volume 列表（左）+ 播放器（右）
+   —— 兩欄；左右到邊界同寬、對齊導覽泡泡（都用 --gutter） ——
    ========================================================= */
 
 .panel__head {
+    flex: none;
     display: flex;
     align-items: center;
     gap: var(--space-md);
-    max-width: var(--page-max);
-    margin-inline: auto;
-    padding-top: var(--space-xl);      /* 讓標題避開導覽泡泡 */
+    padding-top: var(--space-xl);
     padding-inline: var(--gutter);
     padding-bottom: var(--space-lg);
 }
@@ -564,13 +564,39 @@ img, video {
     letter-spacing: 0.02em;
 }
 
-.volumes {
-    max-width: var(--page-max);
-    margin-inline: auto;
+/* 內容區：填滿頭部以下的高度；兩欄等高 */
+.detail {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2xl);
     padding-inline: var(--gutter);
-    padding-bottom: var(--space-3xl);
+    padding-bottom: var(--space-xl);
 }
 
+/* 左欄：只有這裡會捲動 */
+.detail__list {
+    min-width: 0;
+    height: 100%;
+    overflow-y: auto;
+}
+
+/* 右欄：填滿整欄高度 */
+.detail__player {
+    min-width: 0;
+    height: 100%;
+}
+
+.detail__player iframe {
+    display: block;
+    width: 100%;
+    height: 100%;       /* 高度＝左欄高度 */
+    border: 0;
+    border-radius: 12px;
+}
+
+/* 單一 Volume（整列可點） */
 .volume {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
@@ -591,6 +617,12 @@ img, video {
     padding-left: var(--space-sm);
 }
 
+/* 目前播放中的 volume：左側標記 + 縮排 */
+.volume.is-active {
+    padding-left: var(--space-sm);
+    box-shadow: inset 2px 0 0 var(--c-ink);
+}
+
 .volume__index {
     color: var(--c-muted);
     font-variant-numeric: tabular-nums;
@@ -605,23 +637,4 @@ img, video {
     font-size: var(--fs-100);
     letter-spacing: 0.08em;
     color: var(--c-muted);
-}
-
-
-/* =========================================================
-   08  播放器（面板 2）
-   ========================================================= */
-
-.player {
-    max-width: var(--page-max);
-    margin-inline: auto;
-    padding-inline: var(--gutter);
-    padding-bottom: var(--space-3xl);
-}
-
-.player iframe {
-    display: block;
-    width: 100%;
-    border: 0;
-    border-radius: 12px;
 }

@@ -7,6 +7,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&display=swap">
+    <link rel="preconnect" href="https://open.spotify.com">
+    <link rel="preconnect" href="https://open.spotifycdn.com" crossorigin>
+    <link rel="dns-prefetch" href="https://i.scdn.co">
+    <link rel="preload" as="image" href="images/wavy.webp">
+    <link rel="preload" as="image" href="images/mellow-bars.webp">
+    <link rel="preload" as="image" href="images/summer-jam-mixtape.webp">
+    <link rel="preload" as="image" href="images/flying-melodies.webp">
     <link rel="stylesheet" href="style.css">
     <script src="main.js" defer></script>
 </head>
@@ -34,27 +41,21 @@
     </header>
     <!-- 舞台：固定視窗大小、裁掉水平溢出 -->
     <main class="stage">
-        <!-- 軌道：三面板並排，靠 --level 左右位移 -->
         <div class="track" id="track">
-            <!-- 面板 0：系列牆（封面散佈） -->
+            <!-- 面板 0：系列牆 -->
             <section class="panel" aria-label="所有系列">
                 <div class="scatter" id="scatter"></div>
             </section>
-            <!-- 面板 1：該系列的所有 Volume -->
-            <section class="panel" aria-label="Volume 列表">
+            <!-- 面板 1：內頁（左 Volume 列表 + 右播放器） -->
+            <section class="panel" aria-label="系列內容">
                 <header class="panel__head">
                     <button class="back" type="button" data-back aria-label="返回系列牆">←</button>
                     <h2 class="panel__title" id="seriesTitle"></h2>
                 </header>
-                <div class="volumes" id="volumes"></div>
-            </section>
-            <!-- 面板 2：Spotify 播放器 -->
-            <section class="panel" aria-label="播放器">
-                <header class="panel__head">
-                    <button class="back" type="button" data-back aria-label="返回 Volume 列表">←</button>
-                    <h2 class="panel__title" id="volumeTitle"></h2>
-                </header>
-                <div class="player" id="player"></div>
+                <div class="detail">
+                    <div class="detail__list" id="volumes"></div>
+                    <div class="detail__player" id="player"></div>
+                </div>
             </section>
         </div>
     </main>
