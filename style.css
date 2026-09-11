@@ -729,7 +729,7 @@ img, video {
     }
 
     .detail__player iframe {
-        height: 480px;   /* 播放器高度（拉長） */
+        height: 450px;   /* 播放器高度（拉長） */
     }
 
         /* 手機：改用下拉選單，隱藏列表 */
