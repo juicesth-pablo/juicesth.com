@@ -777,7 +777,7 @@ img, video {
 
     .detail__player {
         order: -1;
-        height: 450px;   /* 原本是 height: auto；改成定高 */
+        height: 500px;   /* 原本是 height: auto；改成定高 */
     }
 
     /* 手機：改用下拉選單，隱藏列表 */
