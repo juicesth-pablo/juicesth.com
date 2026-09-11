@@ -5,14 +5,12 @@
    01  Design Tokens（:root 變數）
    02  全域基底（reset / base）
    03  背景層（流動漸變 + 顆粒）
-   —— 以下之後陸續補上 ——
    04  版面容器（wrap / gutter）
    05  導覽列 nav
    06  首頁 hero
    07  playlist 網格 gallery
-   08  頁尾 footer strip
-   09  playlist 內頁
-   10  View Transitions 頁面切換
+   08  playlist 內頁
+   09  View Transitions 頁面切換
    ========================================================= */
 
 
@@ -69,6 +67,7 @@
     /* --- 動畫 --- */
     --ease-out: cubic-bezier(.22, 1, .36, 1);   /* 全站慣用緩動 */
     --dur: 0.6s;                                /* 頁面切換 / 主要動效時長 */
+    --vt-shift: clamp(1.5rem, 5vh, 4rem);   /* 切換時內容位移量 */
 
     /* --- 背景：流動漸變 + 顆粒（03 章用） --- */
     --bg-1: rgb(206 212 184);            /* 最亮：淺鼠尾草 */
@@ -174,6 +173,7 @@ a {
     overflow: hidden;
     /* 打底斜向漸變：左上亮 → 右下暗（呼應 reference） */
     background: linear-gradient(105deg, var(--bg-1), var(--bg-3) 55%, var(--bg-4));
+    view-transition-name: bg;   /* 切換時背景釘住不動、維持連續 */
 }
 
 /* 色團群組：整組只做「一次」模糊，比每顆各自模糊省效能 */
@@ -322,5 +322,448 @@ main {
 
     100% {
         transform: translate3d(0, 0, 0);
+    }
+}
+
+
+/* =========================================================
+   04  版面容器（wrap / gutter）
+   —— 置中、限制最大寬、左右留白統一 ——
+   ========================================================= */
+
+.wrap {
+    width: 100%;
+    max-width: var(--wrap-max);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+}
+
+
+/* =========================================================
+   05  導覽列 nav
+   —— 釘在最上方、透明底讓漸變透出；品牌做成膠囊 pill ——
+   ========================================================= */
+
+.nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    padding: clamp(0.9rem, 2vw, 1.5rem) var(--gutter);
+    view-transition-name: nav;   /* 切頁時釘最上層（第 10 章會用到） */
+}
+
+/* 品牌膠囊：米白底、墨字，呼應 reference 的白色 pill */
+.nav__brand {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-xs) var(--space-md);
+    border-radius: 999px;
+    background-color: var(--c-paper);
+    color: var(--c-ink);
+    font-family: var(--ff-display);
+    font-weight: 700;
+    font-size: var(--fs-100);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: background-color var(--dur) var(--ease-out);
+}
+
+.nav__brand:hover {
+    background-color: var(--c-accent);
+}
+
+/* 右側外部連結：小字、大寫、字距拉開 */
+.nav__links {
+    display: flex;
+    gap: var(--space-md);
+    font-size: var(--fs-100);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.nav__links a {
+    color: var(--c-ink);
+    opacity: 0.7;
+    transition: opacity var(--dur) var(--ease-out);
+}
+
+.nav__links a:hover {
+    opacity: 1;
+}
+
+
+/* =========================================================
+   06  首頁 hero
+   —— 滿版高度、大字靠下對齊（雜誌封面感） ——
+   ========================================================= */
+
+.hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 100vh;      /* 舊瀏覽器後備 */
+    min-height: 100svh;     /* 手機以「動態視窗高」為準，避免被網址列蓋到 */
+    padding-block: var(--space-3xl);
+    gap: var(--space-md);
+}
+
+/* 小標（eyebrow）：大寫、字距拉很開 */
+.hero__eyebrow {
+    font-size: var(--fs-100);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--c-muted);
+}
+
+/* 主標：hero 大字，限制每行字數讓它斷得漂亮 */
+.hero__title {
+    font-size: var(--fs-display);
+    max-width: 14ch;
+}
+
+/* 導言：次要色、限制寬度好閱讀 */
+.hero__lede {
+    max-width: 42ch;
+    font-size: var(--fs-300);
+    color: var(--c-muted);
+}
+
+
+/* =========================================================
+   07  playlist 網格 gallery
+   —— 響應式網格；卡片＝方形封面 + 標題 + meta ——
+   ========================================================= */
+
+/* 區塊標頭：左標題、右計數 */
+.section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-md);
+    padding-top: var(--space-2xl);
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--c-line);
+}
+
+.section-head h2 {
+    font-size: var(--fs-400);
+}
+
+.section-head__count {
+    font-size: var(--fs-100);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c-muted);
+}
+
+/* 網格：欄寬自動填滿；min() 避免窄螢幕溢出，1fr 搭 minmax 防撐破 */
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: var(--space-lg);
+    padding-block: var(--space-xl) var(--space-3xl);
+}
+
+/* 卡片：整張可點；min-width:0 是 Grid 防撐破的關鍵 */
+.card {
+    display: block;
+    min-width: 0;
+    transition: transform var(--dur) var(--ease-out);
+}
+
+.card:hover {
+    transform: translateY(-6px);
+}
+
+/* 封面：方形；佔位用漸變色塊（之後換成 <img>） */
+.card__cover {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--cover, linear-gradient(135deg, var(--bg-2), var(--bg-4)));
+}
+
+/* 封面圖：aspect-ratio 放在 <img> 上、height:auto（避開 iOS Safari 的坑） */
+.card__cover img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    transition: transform var(--dur) var(--ease-out);
+}
+
+.card:hover .card__cover img {
+    transform: scale(1.04);
+}
+
+/* 卡片文字 */
+.card__body {
+    padding-block: var(--space-sm);
+}
+
+.card__title {
+    font-size: var(--fs-300);
+}
+
+.card__meta {
+    margin-top: var(--space-2xs);
+    font-size: var(--fs-100);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c-muted);
+}
+
+
+/* =========================================================
+   08  playlist 內頁
+   —— 上方：封面 + 介紹 + Spotify 播放器；下方：曲目清單 ——
+   ========================================================= */
+
+/* 內頁容器：頂部留白讓內容避開固定導覽列 */
+.playlist {
+    padding-top: var(--space-3xl);
+    padding-bottom: var(--space-3xl);
+}
+
+/* 返回連結 */
+.back {
+    display: inline-block;
+    margin-bottom: var(--space-lg);
+    font-size: var(--fs-100);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c-muted);
+    transition: color var(--dur) var(--ease-out);
+}
+
+.back:hover {
+    color: var(--c-ink);
+}
+
+/* 頭部：手機單欄；寬螢幕左封面右介紹 */
+.playlist__head {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+    padding-bottom: var(--space-2xl);
+}
+
+@media (min-width: 800px) {
+
+    .playlist__head {
+        /* 兩欄都用 minmax(0,1fr) 防止大圖撐破版面 */
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        align-items: start;
+    }
+}
+
+/* 封面：方形；佔位漸變，之後換 <img> */
+.playlist__cover {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--cover, linear-gradient(135deg, var(--bg-2), var(--bg-4)));
+}
+
+.playlist__cover img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
+
+/* 介紹欄 */
+.playlist__intro .eyebrow {
+    font-size: var(--fs-100);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--c-muted);
+}
+
+.playlist__title {
+    margin-block: var(--space-sm);
+    font-size: var(--fs-400);
+}
+
+.playlist__desc {
+    max-width: 46ch;
+    color: var(--c-muted);
+}
+
+.playlist__meta {
+    margin-top: var(--space-md);
+    font-size: var(--fs-100);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c-muted);
+}
+
+/* Spotify 播放器容器 */
+.playlist__player {
+    margin-top: var(--space-lg);
+}
+
+.playlist__player iframe {
+    display: block;
+    width: 100%;
+    border: 0;
+    border-radius: 12px;
+}
+
+/* 曲目清單 */
+.tracklist h2 {
+    padding-bottom: var(--space-md);
+    font-size: var(--fs-300);
+    border-bottom: 1px solid var(--c-line);
+}
+
+.tracklist__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* 單首：序號 | 曲名+演出者 | 時長 */
+.track {
+    display: grid;
+    grid-template-columns: 2.5ch minmax(0, 1fr) auto;
+    gap: var(--space-md);
+    align-items: baseline;
+    padding-block: var(--space-sm);
+    border-bottom: 1px solid var(--c-line);
+}
+
+.track__index {
+    color: var(--c-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.track__artist {
+    font-size: var(--fs-100);
+    color: var(--c-muted);
+}
+
+.track__time {
+    color: var(--c-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+
+/* =========================================================
+   09  View Transitions 頁面切換
+   —— 進內頁上滑、回首頁下滑；導覽列與背景釘住不動 ——
+   ========================================================= */
+
+/* 開啟跨文件切換動畫（兩頁共用此檔，兩頁都會生效） */
+@view-transition {
+    navigation: auto;
+}
+
+/* 疊放層級：背景最底、內容中間、導覽列最上 */
+::view-transition-group(bg) {
+    z-index: 0;
+}
+
+::view-transition-group(root) {
+    z-index: 1;
+}
+
+::view-transition-group(nav) {
+    z-index: 100;
+}
+
+/* 導覽列與背景：切換時不動（不淡入淡出、維持連續） */
+::view-transition-old(nav),
+::view-transition-new(nav),
+::view-transition-old(bg),
+::view-transition-new(bg) {
+    animation: none;
+}
+
+/* forward（進內頁）：整頁內容往上滑 */
+html:active-view-transition-type(forward)::view-transition-old(root) {
+    animation: vtSlideUpOut var(--dur) var(--ease-out) both;
+}
+
+html:active-view-transition-type(forward)::view-transition-new(root) {
+    animation: vtSlideUpIn var(--dur) var(--ease-out) both;
+}
+
+/* back（回首頁 / 返回）：整頁內容往下滑 */
+html:active-view-transition-type(back)::view-transition-old(root) {
+    animation: vtSlideDownOut var(--dur) var(--ease-out) both;
+}
+
+html:active-view-transition-type(back)::view-transition-new(root) {
+    animation: vtSlideDownIn var(--dur) var(--ease-out) both;
+}
+
+/* 尊重「減少動態」：直接瞬間切換，不做位移 */
+@media (prefers-reduced-motion: reduce) {
+
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+        animation: none !important;
+    }
+}
+
+/* --- 切換用 keyframes --- */
+@keyframes vtSlideUpIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(var(--vt-shift));
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes vtSlideUpOut {
+
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(calc(var(--vt-shift) * -1));
+    }
+}
+
+@keyframes vtSlideDownIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(calc(var(--vt-shift) * -1));
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes vtSlideDownOut {
+
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(var(--vt-shift));
     }
 }

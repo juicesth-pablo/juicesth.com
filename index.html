@@ -3,17 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>選曲展示｜Playlists</title>
-
+    <title>juice.sth</title>
     <!-- 全站樣式（相對路徑，搬到 /repo/ 也不會壞） -->
     <link rel="stylesheet" href="style.css">
-
     <!-- 全站共用 JS：defer 讓它在 DOM 解析完才跑 -->
     <script src="main.js" defer></script>
 </head>
 <body>
-     <!-- 流動漸變背景（純裝飾，對輔助技術隱藏） -->
+    <!-- 流動漸變背景（純裝飾，對輔助技術隱藏） -->
     <div class="bg" aria-hidden="true">
         <div class="bg__blobs">
             <span class="bg__blob bg__blob--1"></span>
@@ -23,12 +20,61 @@
         </div>
         <div class="bg__grain"></div>
     </div>
+    <!-- 導覽列 -->
+    <header class="nav">
+        <!-- 品牌名：改成你的站名 -->
+        <a class="nav__brand" href="index.html">Selects</a>
+        <!-- 外部連結：把 href 換成你的 IG / Spotify 網址 -->
+        <nav class="nav__links" aria-label="外部連結">
+            <a href="#" target="_blank" rel="noopener">Instagram</a>
+            <a href="#" target="_blank" rel="noopener">Spotify</a>
+        </nav>
+    </header>
     <main>
-        <!-- 之後這裡放 04 hero 與 06 gallery -->
-        <h1 style="padding: var(--space-3xl) var(--gutter);">
-            選曲展示
-        </h1>
+        <section class="hero wrap">
+            <p class="hero__eyebrow">Curated playlists</p>
+            <h1 class="hero__title">聲音的選集</h1>
+            <p class="hero__lede">
+                一句話講你的選曲態度——什麼場景、什麼頻率、什麼心情。
+            </p>
+        </section>
+        <section class="wrap">
+            <div class="section-head">
+                <h2>Playlists</h2>
+                <span class="section-head__count">4 sets</span>
+            </div>
+            <div class="gallery">
+                <!-- 卡片：之後每個 playlist 一張，複製改內容即可 -->
+                <a class="card" href="playlist-demo.html">
+                    <div class="card__cover" style="--cover: linear-gradient(135deg, #b3bd8c, #46503a);"></div>
+                    <div class="card__body">
+                        <h3 class="card__title">Late Night Drive</h3>
+                        <p class="card__meta">32 tracks · 2h 14m</p>
+                    </div>
+                </a>
+                <a class="card" href="playlist-demo.html">
+                    <div class="card__cover" style="--cover: linear-gradient(135deg, #cfd4b8, #6b734a);"></div>
+                    <div class="card__body">
+                        <h3 class="card__title">Sunday Reset</h3>
+                        <p class="card__meta">24 tracks · 1h 38m</p>
+                    </div>
+                </a>
+                <a class="card" href="playlist-demo.html">
+                    <div class="card__cover" style="--cover: linear-gradient(135deg, #909964, #34382c);"></div>
+                    <div class="card__body">
+                        <h3 class="card__title">Concrete Bloom</h3>
+                        <p class="card__meta">18 tracks · 1h 05m</p>
+                    </div>
+                </a>
+                <a class="card" href="playlist-demo.html">
+                    <div class="card__cover" style="--cover: linear-gradient(135deg, #a7b083, #52563a);"></div>
+                    <div class="card__body">
+                        <h3 class="card__title">After Hours</h3>
+                        <p class="card__meta">40 tracks · 2h 47m</p>
+                    </div>
+                </a>
+            </div>
+        </section>
     </main>
-
 </body>
 </html>

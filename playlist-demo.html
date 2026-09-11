@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Late Night Drive｜juice.sth</title>
+    <!-- 相對路徑：和 index.html 同層，直接用 style.css -->
+    <link rel="stylesheet" href="style.css">
+    <script src="main.js" defer></script>
+</head>
+<body>
+    <!-- 流動漸變背景（與首頁相同） -->
+    <div class="bg" aria-hidden="true">
+        <div class="bg__blobs">
+            <span class="bg__blob bg__blob--1"></span>
+            <span class="bg__blob bg__blob--2"></span>
+            <span class="bg__blob bg__blob--3"></span>
+            <span class="bg__blob bg__blob--4"></span>
+        </div>
+        <div class="bg__grain"></div>
+    </div>
+    <!-- 導覽列（與首頁相同） -->
+    <header class="nav">
+        <a class="nav__brand" href="index.html">Selects</a>
+        <nav class="nav__links" aria-label="外部連結">
+            <a href="#" target="_blank" rel="noopener">Instagram</a>
+            <a href="#" target="_blank" rel="noopener">Spotify</a>
+        </nav>
+    </header>
+    <main>
+        <article class="wrap playlist">
+            <a class="back" href="index.html">← All playlists</a>
+            <header class="playlist__head">
+                <!-- 封面：之後換成 <img src="images/late-night-drive/late-night-drive-cover.webp" ...> -->
+                <div class="playlist__cover" style="--cover: linear-gradient(135deg, #b3bd8c, #46503a);"></div>
+                <div class="playlist__intro">
+                    <p class="eyebrow">Playlist</p>
+                    <h1 class="playlist__title">Late Night Drive</h1>
+                    <p class="playlist__desc">
+                        給深夜獨自開車的那段路——低頻、霓虹、和一點點孤獨。
+                    </p>
+                    <p class="playlist__meta">32 tracks · 2h 14m</p>
+                    <!-- Spotify 播放器：把 playlist ID 換成你的 -->
+                    <div class="playlist__player">
+                        <iframe
+                            src="https://open.spotify.com/embed/playlist/096fjisZoDUSwSpAJrswnX?utm_source=generator"
+                            width="100%"
+                            height="352"
+                            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                            loading="lazy"
+                            title="Spotify 播放器：Late Night Drive">
+                        </iframe>
+                    </div>
+                </div>
+            </header>
+            <section class="tracklist">
+                <h2>Tracklist</h2>
+                <ol class="tracklist__list">
+                    <li class="track">
+                        <span class="track__index">01</span>
+                        <span class="track__name">
+                            Nightcall
+                            <span class="track__artist">Kavinsky</span>
+                        </span>
+                        <span class="track__time">4:18</span>
+                    </li>
+                    <li class="track">
+                        <span class="track__index">02</span>
+                        <span class="track__name">
+                            Midnight City
+                            <span class="track__artist">M83</span>
+                        </span>
+                        <span class="track__time">4:03</span>
+                    </li>
+                    <li class="track">
+                        <span class="track__index">03</span>
+                        <span class="track__name">
+                            Instant Crush
+                            <span class="track__artist">Daft Punk</span>
+                        </span>
+                        <span class="track__time">5:37</span>
+                    </li>
+                </ol>
+            </section>
+        </article>
+    </main>
+</body>
+</html>
