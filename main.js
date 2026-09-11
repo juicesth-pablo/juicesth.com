@@ -63,6 +63,7 @@ const volumesEl = document.getElementById("volumes");
 const playerEl = document.getElementById("player");
 const seriesTitleEl = document.getElementById("seriesTitle");
 const bgEl = document.querySelector(".bg");
+const volumeSelectEl = document.getElementById("volumeSelect");
 
 // 固定亂數種子：每次載入位置都一樣。改這個數字可「整體重新洗牌」一次。
 const LAYOUT_SEED = 20260911;
@@ -153,8 +154,10 @@ function renderDetail(series, index) {
     currentSeries = series;
     seriesTitleEl.textContent = series.title;
     volumesEl.innerHTML = "";
+    volumeSelectEl.innerHTML = "";
     series.volumes.forEach(function (vol, i) {
         const num = String(i + 1).padStart(2, "0");
+        // 桌機列表按鈕
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "volume";
@@ -164,6 +167,11 @@ function renderDetail(series, index) {
             '<span class="volume__title">' + vol.title + '</span>' +
             '<span class="volume__meta">' + (vol.meta || "") + '</span>';
         volumesEl.appendChild(btn);
+        // 手機下拉選項
+        const opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = vol.title;
+        volumeSelectEl.appendChild(opt);
     });
     setActiveVolume(index || 0);
 }
@@ -177,6 +185,7 @@ function setActiveVolume(index) {
     Array.prototype.forEach.call(volumesEl.children, function (btn, k) {
         btn.classList.toggle("is-active", k === i);
     });
+    volumeSelectEl.value = i;
     const vol = currentSeries.volumes[i];
     renderPlayer(vol.title, vol.spotify);
 }
@@ -397,6 +406,15 @@ volumesEl.addEventListener("click", function (e) {
     const i = parseInt(btn.dataset.index, 10);
     setActiveVolume(i);
     // 記住選到的 volume（reload / 分享用），但不新增歷史 → 返回仍直接回系列牆
+    history.replaceState(history.state, "", "#" + currentSeries.id + "/" + i);
+});
+
+volumeSelectEl.addEventListener("change", function () {
+    if (!currentSeries) {
+        return;
+    }
+    const i = parseInt(volumeSelectEl.value, 10);
+    setActiveVolume(i);
     history.replaceState(history.state, "", "#" + currentSeries.id + "/" + i);
 });
 

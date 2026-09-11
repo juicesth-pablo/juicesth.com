@@ -618,6 +618,11 @@ img, video {
     border-radius: 12px;
 }
 
+/* 下拉選單：桌機隱藏（用左側列表），手機才顯示 */
+.detail__select {
+    display: none;
+}
+
 /* 單一 Volume（整列可點） */
 .volume {
     display: grid;
@@ -723,10 +728,31 @@ img, video {
         height: 352px;   /* 播放器高度（拉長） */
     }
 
-    /* Volume 列表：一次最多約 4 行，超過就在列表內捲動 */
+        /* 手機：改用下拉選單，隱藏列表 */
     .detail__list {
-        height: auto;
-        max-height: 11rem;
-        overflow-y: auto;
+        display: none;
+    }
+
+    .detail__select {
+        display: block;
+        order: 0;
+        width: 100%;
+        padding: var(--space-sm) var(--space-xl) var(--space-sm) var(--space-md);
+        border: 1px solid rgb(255 255 255 / .35);
+        border-radius: 999px;
+        color: var(--c-ink);
+        font-family: var(--ff-display);
+        font-size: var(--fs-200);
+        /* 玻璃底（與導覽泡泡一致） */
+        background-color: rgb(255 255 255 / .16);
+        box-shadow: 0 6px 24px rgb(0 0 0 / .12), inset 0 1px 0 rgb(255 255 255 / .5);
+        -webkit-backdrop-filter: blur(12px) saturate(1.4);
+        backdrop-filter: blur(12px) saturate(1.4);
+        /* 移除原生外觀、換上自訂箭頭 */
+        -webkit-appearance: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='12'%20height='8'%3E%3Cpath%20d='M1%201l5%205%205-5'%20fill='none'%20stroke='%231c1c18'%20stroke-width='1.5'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right var(--space-md) center;
     }
 }
