@@ -725,7 +725,7 @@ img, video {
     }
 
     .detail__player iframe {
-        height: 352px;   /* 播放器高度（拉長） */
+        height: 400px;   /* 播放器高度（拉長） */
     }
 
         /* 手機：改用下拉選單，隱藏列表 */
@@ -736,20 +736,23 @@ img, video {
     .detail__select {
         display: block;
         order: 0;
-        width: 40%;
-        padding: var(--space-2xs) var(--space-xl) var(--space-sm) var(--space-md);
+        width: auto;
+        max-width: 100%;
+        margin-left: auto;                        /* 置中 */
+        height: var(--pill-h);                      /* 與導覽泡泡同高 */
+        padding: 0 var(--space-xl) 0 var(--space-lg);
         border: 1px solid rgb(255 255 255 / .35);
         border-radius: 999px;
         color: var(--c-ink);
         font-family: var(--ff-display);
-        font-size: var(--fs-100);
-        margin-left: auto;
+        font-size: var(--fs-100);                   /* 與品牌泡泡同字級 */
+        letter-spacing: 0.02em;
         /* 玻璃底（與導覽泡泡一致） */
         background-color: rgb(255 255 255 / .16);
         box-shadow: 0 6px 24px rgb(0 0 0 / .12), inset 0 1px 0 rgb(255 255 255 / .5);
         -webkit-backdrop-filter: blur(12px) saturate(1.4);
         backdrop-filter: blur(12px) saturate(1.4);
-        /* 移除原生外觀、換上自訂箭頭 */
+        /* 移除原生外觀 + 自訂箭頭 */
         -webkit-appearance: none;
         appearance: none;
         background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='12'%20height='8'%3E%3Cpath%20d='M1%201l5%205%205-5'%20fill='none'%20stroke='%231c1c18'%20stroke-width='1.5'/%3E%3C/svg%3E");
