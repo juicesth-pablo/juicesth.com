@@ -736,11 +736,11 @@ img, video {
     .detail__select {
         display: block;
         order: 0;
-        width: auto;
-        max-width: 100%;
+        width: 35%;
         margin-left: auto;                        /* 置中 */
+        text-align: left;
         height: var(--pill-h);                      /* 與導覽泡泡同高 */
-        padding: 0 var(--space-xl) 0 var(--space-lg);
+        padding: 0 var(--space-sm) 0 var(--space-lg);
         border: 1px solid rgb(255 255 255 / .35);
         border-radius: 999px;
         color: var(--c-ink);
