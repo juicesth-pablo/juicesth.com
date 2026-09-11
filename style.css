@@ -5,86 +5,84 @@
    01  Design Tokens（:root 變數）
    02  全域基底（reset / base）
    03  背景層（流動漸變 + 顆粒）
-   04  版面容器（wrap / gutter）
-   05  導覽列 nav
-   06  首頁 hero
-   07  playlist 網格 gallery
-   08  playlist 內頁
-   09  View Transitions 頁面切換
+   04  導覽列 nav
+   05  舞台 / 軌道 / 面板（水平滑動）
+   06  系列牆 scatter（面板 0）
+   07  面板頭部 + Volume 列表（面板 1）
+   08  播放器（面板 2）
    ========================================================= */
 
 
 /* =========================================================
    01  DESIGN TOKENS
-   —— 顏色、字體、間距全部集中在這；改一處全站生效 ——
    ========================================================= */
 
 :root {
+    /* --- 顏色（空格分隔 RGB，方便加透明度） --- */
+    --c-ink-rgb: 28 28 24;
+    --c-paper-rgb: 243 241 231;
+    --c-accent-rgb: 144 153 100;
 
-    /* --- 顏色：用「空格分隔的 RGB」存原始值，方便之後加透明度 --- */
-    /* 例：rgb(var(--c-ink-rgb) / .6) 就能拿到 60% 透明的墨色 */
-    --c-ink-rgb: 28 28 24;         /* 溫黑（文字） */
-    --c-paper-rgb: 243 241 231;    /* 米白（背景） */
-    --c-accent-rgb: 144 153 100;   /* 主色：橄欖綠 #909964 */
-
-    /* 語意化顏色（實際使用這幾個，不要直接用上面的 -rgb） */
     --c-ink: rgb(var(--c-ink-rgb));
     --c-paper: rgb(var(--c-paper-rgb));
     --c-accent: rgb(var(--c-accent-rgb));
-    --c-accent-deep: rgb(114 122 74);            /* 主色加深，hover 用 */
-    --c-muted: rgb(var(--c-ink-rgb) / .62);      /* 次要文字 */
-    --c-line: rgb(var(--c-ink-rgb) / .14);       /* 分隔線 / 邊框 */
+    --c-accent-deep: rgb(114 122 74);
+    --c-muted: rgb(var(--c-ink-rgb) / .62);
+    --c-line: rgb(var(--c-ink-rgb) / .14);
 
-    /* --- 字體：先用系統字代用，之後換 webfont 只改這兩行 --- */
-    /* 建議之後：display 換 grotesque（如 Space Grotesk / Anton）；body 換 Inter */
-    --ff-display: "Helvetica Neue", "Arial Narrow", Arial, sans-serif;
-    --ff-body: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    /* --- 字體 --- */
+    /* --ff-display: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Monaco, monospace;
+    --ff-body: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Monaco, monospace; */
+    --ff-display: "Michroma", ui-monospace, "SF Mono", Menlo, monospace;
+    --ff-body: "Michroma", ui-monospace, "SF Mono", Menlo, monospace;
 
-    /* --- 字級：clamp 流動縮放（最小 → 隨 vw 放大 → 觸頂維持） --- */
-    --fs-100: clamp(0.8rem, 0.77rem + 0.15vw, 0.875rem);    /* caption / 小標 */
-    --fs-200: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);      /* 內文 */
-    --fs-300: clamp(1.25rem, 1.1rem + 0.75vw, 1.75rem);     /* 小標題 */
-    --fs-400: clamp(1.75rem, 1.3rem + 2.2vw, 3rem);         /* 區塊標題 h2 */
-    --fs-display: clamp(3rem, 1.5rem + 7.5vw, 9rem);        /* hero 大字 */
 
-    /* --- 間距：固定微間距（不隨螢幕縮放） --- */
-    --space-2xs: 0.25rem;   /* 4px */
-    --space-xs: 0.5rem;     /* 8px */
-    --space-sm: 0.75rem;    /* 12px */
-    --space-md: 1rem;       /* 16px */
+    /* --- 字級：clamp 流動縮放 --- */
+    --fs-100: clamp(0.8rem, 0.77rem + 0.15vw, 0.875rem);
+    --fs-200: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+    --fs-300: clamp(1.25rem, 1.1rem + 0.75vw, 1.75rem);
+    --fs-400: clamp(1.75rem, 1.3rem + 2.2vw, 3rem);
+    --fs-display: clamp(3rem, 1.5rem + 7.5vw, 9rem);
 
-    /* --- 間距：流動間距（隨 vw 等比縮放；一條 clamp 吃桌機＋手機） --- */
+    /* --- 間距：固定微間距 --- */
+    --space-2xs: 0.25rem;
+    --space-xs: 0.5rem;
+    --space-sm: 0.75rem;
+    --space-md: 1rem;
+
+    /* --- 間距：流動間距 --- */
     --space-lg: clamp(1.5rem, 4vw, 2.5rem);
     --space-xl: clamp(2rem, 6vw, 4rem);
     --space-2xl: clamp(3rem, 8vw, 6rem);
     --space-3xl: clamp(4rem, 10vw, 8rem);
 
     /* --- 版面 --- */
-    --wrap-max: 1600px;                      /* 內容最大寬 */
-    --gutter: clamp(1.25rem, 4vw, 4rem);     /* 頁面左右留白 */
-    --radius: 2px;                           /* editorial 偏方正，圓角很小 */
+    --gutter: clamp(1.25rem, 4vw, 4rem);
+    --nav-h: clamp(3.5rem, 8vh, 5.5rem);     /* 面板頂部留白＝導覽列高度 */
+    --pill-h: clamp(2.6rem, 4.5vw, 3.4rem);   /* 導覽泡泡高度（越大越大顆） */
+    --radius: 2px;
+    --page-max: 720px;     /* 內頁容器最大寬（各頁一致） */
 
     /* --- 動畫 --- */
-    --ease-out: cubic-bezier(.22, 1, .36, 1);   /* 全站慣用緩動 */
-    --dur: 0.6s;                                /* 頁面切換 / 主要動效時長 */
-    --vt-shift: clamp(1.5rem, 5vh, 4rem);   /* 切換時內容位移量 */
+    --ease-out: cubic-bezier(.22, 1, .36, 1);
+    --dur: 0.6s;                             /* hover / 小動效 */
+    --slide-dur: 1.0s;                       /* 面板左右滑動時長（越大越滑順） */
 
-    /* --- 背景：流動漸變 + 顆粒（03 章用） --- */
-    --bg-1: rgb(206 212 184);            /* 最亮：淺鼠尾草 */
-    --bg-2: rgb(144 153 100);            /* 主色橄欖 */
-    --bg-3: rgb(96 104 74);              /* 中深橄欖 */
-    --bg-4: rgb(52 56 44);               /* 最深：墨橄欖（右下暗角） */
-
-    --bg-drift: 5s;                     /* 漂移週期：越大越慢越優雅 */
-    --bg-blur: clamp(40px, 9vw, 120px);  /* 模糊量：越大越像霧、色團融得越勻 */
-    --grain-opacity: 0.16;               /* 顆粒濃度：0 = 全無，0.2 = 很明顯 */
-
-    --grain-drift: 9s;    /* 顆粒游動週期：越大越慢、越「微微」 */
+    /* --- 背景：流動漸變 + 顆粒 --- */
+    --bg-1: rgb(206 212 184);
+    --bg-2: rgb(144 153 100);
+    --bg-3: rgb(96 104 74);
+    --bg-4: rgb(52 56 44);
+    --bg-drift: 30s;      /* 色團漂移週期（越大越慢越高級） */
+    --bg-rotate: 46s;     /* 整個色場緩慢旋轉/呼吸週期 */
+    --bg-blur: clamp(40px, 9vw, 120px);
+    --grain-opacity: 0.78;                   /* 顆粒濃度 */
+    --grain-drift: 9s;
 }
 
 
 /* =========================================================
-   02  全域基底（reset / base）
+   02  全域基底
    ========================================================= */
 
 *,
@@ -95,7 +93,6 @@
 
 html {
     -webkit-text-size-adjust: 100%;
-    scroll-behavior: smooth;
 }
 
 body {
@@ -109,13 +106,10 @@ body {
     text-rendering: optimizeLegibility;
 }
 
-/* 標題預設用 display 字體、行高收緊、字距微縮（雜誌大字感） */
-h1,
-h2,
-h3 {
+h1, h2, h3 {
     margin: 0;
     font-family: var(--ff-display);
-    font-weight: 700;
+    font-weight: 400;
     line-height: 1.02;
     letter-spacing: -0.02em;
 }
@@ -124,31 +118,18 @@ p {
     margin: 0;
 }
 
-/* 圖片 / 影片一律 block，避免底部空隙；不超出容器 */
-img,
-video {
+img, video {
     display: block;
     max-width: 100%;
     height: auto;
 }
 
-a {
-    color: inherit;
-    text-decoration: none;
-}
-
-/* 選取顏色帶主色 */
 ::selection {
     background-color: rgb(var(--c-accent-rgb) / .3);
 }
 
-/* 尊重系統「減少動態」偏好：全站動畫幾乎關閉 */
+/* 尊重系統「減少動態」：滑動與漂移幾乎關閉 */
 @media (prefers-reduced-motion: reduce) {
-
-    html {
-        scroll-behavior: auto;
-    }
-
     *,
     *::before,
     *::after {
@@ -160,38 +141,63 @@ a {
 
 
 /* =========================================================
-   03  背景層（流動漸變 + 顆粒）
-   —— 固定滿版；幾顆大色團緩慢漂移，一次性模糊融成 mesh；
-      上面蓋 SVG 顆粒。內容用 z-index 浮在它之上 ——
+   03  背景層（固定漸變 + 游動顆粒）
+   —— 色團固定只負責上色；只有顆粒緩慢游動 ——
    ========================================================= */
 
-/* 背景容器：釘滿整個視窗，沉在內容底下 */
+/* 讓背景色變數可平滑過渡（hover 封面時變色用） */
+@property --bg-1 {
+    syntax: "<color>";
+    inherits: true;
+    initial-value: #ced4b8;
+}
+
+@property --bg-2 {
+    syntax: "<color>";
+    inherits: true;
+    initial-value: #909964;
+}
+
+@property --bg-3 {
+    syntax: "<color>";
+    inherits: true;
+    initial-value: #60684a;
+}
+
+@property --bg-4 {
+    syntax: "<color>";
+    inherits: true;
+    initial-value: #34382c;
+}
+
 .bg {
     position: fixed;
     inset: 0;
     z-index: 0;
     overflow: hidden;
-    /* 打底斜向漸變：左上亮 → 右下暗（呼應 reference） */
     background: linear-gradient(105deg, var(--bg-1), var(--bg-3) 55%, var(--bg-4));
-    view-transition-name: bg;   /* 切換時背景釘住不動、維持連續 */
+    transition: --bg-1 var(--dur) var(--ease-out),
+                --bg-2 var(--dur) var(--ease-out),
+                --bg-3 var(--dur) var(--ease-out),
+                --bg-4 var(--dur) var(--ease-out);
 }
 
-/* 色團群組：整組只做「一次」模糊，比每顆各自模糊省效能 */
+/* 色團群組：一次性模糊 + 整體極慢旋轉呼吸（放大避免旋轉露出邊角） */
 .bg__blobs {
     position: absolute;
     inset: 0;
     filter: blur(var(--bg-blur));
+    transform: scale(1.12);
+    animation: bgRotate var(--bg-rotate) ease-in-out infinite alternate;
+    will-change: transform;
 }
 
-/* 單顆色團：用 radial-gradient 讓邊緣自然淡出 */
 .bg__blob {
     position: absolute;
     border-radius: 50%;
     background: radial-gradient(circle at center, currentColor, transparent 70%);
-    will-change: transform;
 }
 
-/* 色團 1：淺色，左上，最大顆 */
 .bg__blob--1 {
     top: -20%;
     left: -10%;
@@ -201,147 +207,119 @@ a {
     animation: bgDriftA var(--bg-drift) ease-in-out infinite alternate;
 }
 
-/* 色團 2：主色橄欖，中右 */
 .bg__blob--2 {
     top: 5%;
     right: -15%;
     width: 55vmax;
     height: 55vmax;
     color: var(--bg-2);
-    animation: bgDriftB calc(var(--bg-drift) * 1.25) ease-in-out infinite alternate;
+    animation: bgDriftB calc(var(--bg-drift) * 1.3) ease-in-out infinite alternate;
 }
 
-/* 色團 3：中深，左下 */
 .bg__blob--3 {
     bottom: -25%;
     left: -5%;
     width: 60vmax;
     height: 60vmax;
     color: var(--bg-3);
-    animation: bgDriftC calc(var(--bg-drift) * 1.5) ease-in-out infinite alternate;
+    animation: bgDriftC calc(var(--bg-drift) * 1.6) ease-in-out infinite alternate;
 }
 
-/* 色團 4：最深，右下暗角，增加景深 */
 .bg__blob--4 {
     bottom: -20%;
     right: -20%;
     width: 50vmax;
     height: 50vmax;
     color: var(--bg-4);
-    animation: bgDriftD calc(var(--bg-drift) * 1.1) ease-in-out infinite alternate;
+    animation: bgDriftD calc(var(--bg-drift) * 1.15) ease-in-out infinite alternate;
 }
 
-/* 顆粒層：SVG feTurbulence 雜訊，用 soft-light 疊在色團上；緩慢微幅游動 */
+/* 顆粒：唯一會動的層；低頻雜訊 + 下採樣讓顆粒細緻 */
 .bg__grain {
     position: absolute;
-    inset: -6%;                  /* 外擴一點，位移時不會露出邊緣 */
+    inset: -6%;
     opacity: var(--grain-opacity);
     mix-blend-mode: soft-light;
-    background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='160'%20height='160'%3E%3Cfilter%20id='n'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='1.8'%20numOctaves='2'%20stitchTiles='stitch'/%3E%3C/filter%3E%3Crect%20width='100%25'%20height='100%25'%20filter='url(%23n)'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='200'%20height='200'%3E%3Cfilter%20id='n'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.7'%20numOctaves='3'%20stitchTiles='stitch'/%3E%3C/filter%3E%3Crect%20width='100%25'%20height='100%25'%20filter='url(%23n)'/%3E%3C/svg%3E");
     background-repeat: repeat;
-    background-size: 160px 160px;
+    background-size: 110px 110px;
     will-change: transform;
     animation: grainDrift var(--grain-drift) ease-in-out infinite;
 }
 
-/* 內容浮在背景之上 */
-main {
-    position: relative;
-    z-index: 1;
-}
-
-/* 分頁被切走時，色團與顆粒一起暫停（省電，由 main.js 加上 .is-paused） */
+/* 分頁被切走時暫停所有背景動畫（省電） */
+.bg.is-paused .bg__blobs,
 .bg.is-paused .bg__blob,
 .bg.is-paused .bg__grain {
     animation-play-state: paused;
 }
 
-/* 色團漂移路徑：各自不同，避免同步、才有「自然流動」感 */
-@keyframes bgDriftA {
-
-    from {
-        transform: translate(0, 0) scale(1);
-    }
-
-    to {
-        transform: translate(8%, 6%) scale(1.15);
-    }
-}
-
-@keyframes bgDriftB {
-
-    from {
-        transform: translate(0, 0) scale(1.1);
-    }
-
-    to {
-        transform: translate(-10%, 8%) scale(1);
-    }
-}
-
-@keyframes bgDriftC {
-
-    from {
-        transform: translate(0, 0) scale(1);
-    }
-
-    to {
-        transform: translate(6%, -8%) scale(1.2);
-    }
-}
-
-@keyframes bgDriftD {
-
-    from {
-        transform: translate(0, 0) scale(1.05);
-    }
-
-    to {
-        transform: translate(-8%, -6%) scale(1.15);
-    }
-}
-
-/* 顆粒游動：小幅度、繞一小圈回原點（用 % 相對自身尺寸，幅度很小） */
 @keyframes grainDrift {
-
     0% {
         transform: translate3d(0, 0, 0);
     }
-
     25% {
         transform: translate3d(-1.5%, -1%, 0);
     }
-
     50% {
         transform: translate3d(1%, -1.8%, 0);
     }
-
     75% {
         transform: translate3d(-0.8%, 1.2%, 0);
     }
-
     100% {
         transform: translate3d(0, 0, 0);
     }
 }
 
+@keyframes bgRotate {
+    from {
+        transform: rotate(-6deg) scale(1.12);
+    }
+    to {
+        transform: rotate(6deg) scale(1.12);
+    }
+}
 
-/* =========================================================
-   04  版面容器（wrap / gutter）
-   —— 置中、限制最大寬、左右留白統一 ——
-   ========================================================= */
+@keyframes bgDriftA {
+    from {
+        transform: translate(0, 0) scale(1);
+    }
+    to {
+        transform: translate(6%, 5%) scale(1.12);
+    }
+}
 
-.wrap {
-    width: 100%;
-    max-width: var(--wrap-max);
-    margin-inline: auto;
-    padding-inline: var(--gutter);
+@keyframes bgDriftB {
+    from {
+        transform: translate(0, 0) scale(1.1);
+    }
+    to {
+        transform: translate(-8%, 6%) scale(1);
+    }
+}
+
+@keyframes bgDriftC {
+    from {
+        transform: translate(0, 0) scale(1);
+    }
+    to {
+        transform: translate(5%, -7%) scale(1.15);
+    }
+}
+
+@keyframes bgDriftD {
+    from {
+        transform: translate(0, 0) scale(1.05);
+    }
+    to {
+        transform: translate(-6%, -5%) scale(1.12);
+    }
 }
 
 
 /* =========================================================
-   05  導覽列 nav
-   —— 釘在最上方、透明底讓漸變透出；品牌做成膠囊 pill ——
+   04  導覽列 nav（玻璃泡泡）
    ========================================================= */
 
 .nav {
@@ -352,418 +330,298 @@ main {
     z-index: 10;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: var(--space-md);
+    gap: var(--space-sm);
     padding: clamp(0.9rem, 2vw, 1.5rem) var(--gutter);
-    view-transition-name: nav;   /* 切頁時釘最上層（第 10 章會用到） */
 }
 
-/* 品牌膠囊：米白底、墨字，呼應 reference 的白色 pill */
+/* 玻璃底（Safari 需 -webkit- 前綴） */
+.glass {
+    border: 1px solid rgb(255 255 255 / .35);
+    border-radius: 999px;
+    background: rgb(255 255 255 / .005);
+    box-shadow: 0 6px 24px rgb(0 0 0 / .12), inset 0 1px 0 rgb(255 255 255 / .5);
+    -webkit-backdrop-filter: blur(3px) saturate(1.4);
+    backdrop-filter: blur(3px) saturate(1.4);
+}
+
+/* 品牌泡泡 */
 .nav__brand {
     display: inline-flex;
     align-items: center;
-    padding: var(--space-xs) var(--space-md);
-    border-radius: 999px;
-    background-color: var(--c-paper);
+    min-height: var(--pill-h);
+    padding-inline: var(--space-lg);
     color: var(--c-ink);
     font-family: var(--ff-display);
-    font-weight: 700;
-    font-size: var(--fs-100);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    transition: background-color var(--dur) var(--ease-out);
+    font-size: var(--fs-200);
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: background var(--dur) var(--ease-out);
 }
 
 .nav__brand:hover {
-    background-color: var(--c-accent);
+    background: rgb(255 255 255 / .28);
 }
 
-/* 右側外部連結：小字、大寫、字距拉開 */
-.nav__links {
+/* 連結泡泡：+ 貼在品牌旁；hover / 聚焦向右展開 */
+.menu {
     display: flex;
-    gap: var(--space-md);
-    font-size: var(--fs-100);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    align-items: center;
+    height: var(--pill-h);
+    overflow: hidden;
 }
 
-.nav__links a {
+/* + 一律置中的正圓（收合時整顆泡泡就是這個圓） */
+.menu__plus {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: var(--pill-h);
+    height: var(--pill-h);
     color: var(--c-ink);
-    opacity: 0.7;
+    font-family: var(--ff-display);
+    font-size: var(--fs-200);
+    line-height: 1;
+    transition: transform var(--dur) var(--ease-out);
+}
+
+.menu:hover .menu__plus,
+.menu:focus-within .menu__plus {
+    transform: rotate(45deg);
+}
+
+/* 連結：收合時寬 0，展開向右露出 */
+.menu__links {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    max-width: 0;
+    padding-right: 0;
+    opacity: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: max-width var(--dur) var(--ease-out), opacity var(--dur) var(--ease-out), padding-right var(--dur) var(--ease-out);
+}
+
+.menu:hover .menu__links,
+.menu:focus-within .menu__links {
+    max-width: 30ch;
+    padding-right: var(--space-lg);
+    opacity: 1;
+}
+
+.menu__links a {
+    color: var(--c-ink);
+    font-size: var(--fs-100);
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    opacity: 0.75;
     transition: opacity var(--dur) var(--ease-out);
 }
 
-.nav__links a:hover {
+.menu__links a:hover {
     opacity: 1;
 }
 
 
 /* =========================================================
-   06  首頁 hero
-   —— 滿版高度、大字靠下對齊（雜誌封面感） ——
+   05  舞台 / 軌道 / 面板（水平滑動）
    ========================================================= */
 
-.hero {
+.stage {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;   /* 裁掉左右溢出的面板 */
+}
+
+/* 軌道：三面板並排，靠 --level 決定水平位移 */
+.track {
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    min-height: 100vh;      /* 舊瀏覽器後備 */
-    min-height: 100svh;     /* 手機以「動態視窗高」為準，避免被網址列蓋到 */
-    padding-block: var(--space-3xl);
-    gap: var(--space-md);
+    height: 100%;
+    transform: translateX(calc(var(--level, 0) * -100%));
+    transition: transform var(--slide-dur) var(--ease-out);
 }
 
-/* 小標（eyebrow）：大寫、字距拉很開 */
-.hero__eyebrow {
-    font-size: var(--fs-100);
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--c-muted);
-}
-
-/* 主標：hero 大字，限制每行字數讓它斷得漂亮 */
-.hero__title {
-    font-size: var(--fs-display);
-    max-width: 14ch;
-}
-
-/* 導言：次要色、限制寬度好閱讀 */
-.hero__lede {
-    max-width: 42ch;
-    font-size: var(--fs-300);
-    color: var(--c-muted);
+/* 每個面板剛好一個視窗寬；太長可單獨垂直捲動 */
+.panel {
+    flex: 0 0 100%;
+    height: 100%;
+    padding-top: var(--nav-h);
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 
 /* =========================================================
-   07  playlist 網格 gallery
-   —— 響應式網格；卡片＝方形封面 + 標題 + meta ——
+   06  系列牆 scatter（面板 0）
+   —— 只顯示封面；hover 才在右側下方淡入系列名稱 ——
    ========================================================= */
 
-/* 區塊標頭：左標題、右計數 */
-.section-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: var(--space-md);
-    padding-top: var(--space-2xl);
-    padding-bottom: var(--space-lg);
-    border-bottom: 1px solid var(--c-line);
-}
-
-.section-head h2 {
-    font-size: var(--fs-400);
-}
-
-.section-head__count {
-    font-size: var(--fs-100);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--c-muted);
-}
-
-/* 網格：欄寬自動填滿；min() 避免窄螢幕溢出，1fr 搭 minmax 防撐破 */
-.gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
-    gap: var(--space-lg);
-    padding-block: var(--space-xl) var(--space-3xl);
-}
-
-/* 卡片：整張可點；min-width:0 是 Grid 防撐破的關鍵 */
-.card {
-    display: block;
-    min-width: 0;
-    transition: transform var(--dur) var(--ease-out);
-}
-
-.card:hover {
-    transform: translateY(-6px);
-}
-
-/* 封面：方形；佔位用漸變色塊（之後換成 <img>） */
-.card__cover {
+.scatter {
     position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* 單一系列封面：正擺；位置與尺寸由 JS 自動排版（防重疊） */
+.series {
+    position: absolute;
+    top: var(--top);
+    left: var(--left);
+    width: var(--size);
+    padding: 0;
+    border: 0;
+    background: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.series__cover {
+    display: block;
     aspect-ratio: 1 / 1;
-    overflow: hidden;
     border-radius: var(--radius);
     background: var(--cover, linear-gradient(135deg, var(--bg-2), var(--bg-4)));
-}
-
-/* 封面圖：aspect-ratio 放在 <img> 上、height:auto（避開 iOS Safari 的坑） */
-.card__cover img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
+    box-shadow: 0 10px 40px rgb(0 0 0 / .18);
     transition: transform var(--dur) var(--ease-out);
 }
 
-.card:hover .card__cover img {
+.series:hover .series__cover {
     transform: scale(1.04);
 }
 
-/* 卡片文字 */
-.card__body {
-    padding-block: var(--space-sm);
+/* 系列名稱：封面右側、切齊下緣；預設隱藏，hover / 鍵盤聚焦才淡入 */
+.series__label {
+    position: absolute;
+    left: calc(100% + var(--space-sm));
+    bottom: 0;
+    white-space: nowrap;
+    font-family: var(--ff-display);
+    font-size: var(--fs-200);
+    letter-spacing: 0.02em;
+    color: var(--c-ink);
+    opacity: 0;
+    transition: opacity var(--dur) var(--ease-out);
+    pointer-events: none;
 }
 
-.card__title {
+.series:hover .series__label,
+.series:focus-visible .series__label {
+    opacity: 1;
+}
+
+/* 焦點外框：滑鼠點擊不顯示；只有鍵盤操作才給可見外框 */
+.series:focus:not(:focus-visible),
+.volume:focus:not(:focus-visible),
+.back:focus:not(:focus-visible),
+.nav__brand:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.series:focus-visible .series__cover,
+.volume:focus-visible,
+.back:focus-visible,
+.nav__brand:focus-visible {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 3px;
+}
+
+
+/* =========================================================
+   07  面板頭部 + Volume 列表（面板 1）
+   —— 與播放器共用同一容器寬度，頁面間對齊一致 ——
+   ========================================================= */
+
+.panel__head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding-top: var(--space-xl);      /* 讓標題避開導覽泡泡 */
+    padding-inline: var(--gutter);
+    padding-bottom: var(--space-lg);
+}
+
+.back {
+    padding: 0;
+    border: 0;
+    background: none;
+    font-family: var(--ff-display);
     font-size: var(--fs-300);
+    line-height: 1;
+    color: var(--c-ink);
+    cursor: pointer;
+    transition: opacity var(--dur) var(--ease-out);
 }
 
-.card__meta {
-    margin-top: var(--space-2xs);
+.back:hover {
+    opacity: 0.6;
+}
+
+.panel__title {
+    font-size: var(--fs-300);
+    letter-spacing: 0.02em;
+}
+
+.volumes {
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    padding-bottom: var(--space-3xl);
+}
+
+.volume {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: var(--space-md);
+    align-items: baseline;
+    width: 100%;
+    padding: var(--space-md) 0;
+    border: 0;
+    border-bottom: 1px solid var(--c-line);
+    background: none;
+    text-align: left;
+    color: inherit;
+    cursor: pointer;
+    transition: padding-left var(--dur) var(--ease-out);
+}
+
+.volume:hover {
+    padding-left: var(--space-sm);
+}
+
+.volume__index {
+    color: var(--c-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.volume__title {
+    font-family: var(--ff-display);
+    font-size: var(--fs-200);
+}
+
+.volume__meta {
     font-size: var(--fs-100);
     letter-spacing: 0.08em;
-    text-transform: uppercase;
     color: var(--c-muted);
 }
 
 
 /* =========================================================
-   08  playlist 內頁
-   —— 上方：封面 + 介紹 + Spotify 播放器；下方：曲目清單 ——
+   08  播放器（面板 2）
    ========================================================= */
 
-/* 內頁容器：頂部留白讓內容避開固定導覽列 */
-.playlist {
-    padding-top: var(--space-3xl);
+.player {
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
     padding-bottom: var(--space-3xl);
 }
 
-/* 返回連結 */
-.back {
-    display: inline-block;
-    margin-bottom: var(--space-lg);
-    font-size: var(--fs-100);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--c-muted);
-    transition: color var(--dur) var(--ease-out);
-}
-
-.back:hover {
-    color: var(--c-ink);
-}
-
-/* 頭部：手機單欄；寬螢幕左封面右介紹 */
-.playlist__head {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-xl);
-    padding-bottom: var(--space-2xl);
-}
-
-@media (min-width: 800px) {
-
-    .playlist__head {
-        /* 兩欄都用 minmax(0,1fr) 防止大圖撐破版面 */
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        align-items: start;
-    }
-}
-
-/* 封面：方形；佔位漸變，之後換 <img> */
-.playlist__cover {
-    aspect-ratio: 1 / 1;
-    overflow: hidden;
-    border-radius: var(--radius);
-    background: var(--cover, linear-gradient(135deg, var(--bg-2), var(--bg-4)));
-}
-
-.playlist__cover img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-}
-
-/* 介紹欄 */
-.playlist__intro .eyebrow {
-    font-size: var(--fs-100);
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--c-muted);
-}
-
-.playlist__title {
-    margin-block: var(--space-sm);
-    font-size: var(--fs-400);
-}
-
-.playlist__desc {
-    max-width: 46ch;
-    color: var(--c-muted);
-}
-
-.playlist__meta {
-    margin-top: var(--space-md);
-    font-size: var(--fs-100);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--c-muted);
-}
-
-/* Spotify 播放器容器 */
-.playlist__player {
-    margin-top: var(--space-lg);
-}
-
-.playlist__player iframe {
+.player iframe {
     display: block;
     width: 100%;
     border: 0;
     border-radius: 12px;
-}
-
-/* 曲目清單 */
-.tracklist h2 {
-    padding-bottom: var(--space-md);
-    font-size: var(--fs-300);
-    border-bottom: 1px solid var(--c-line);
-}
-
-.tracklist__list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-/* 單首：序號 | 曲名+演出者 | 時長 */
-.track {
-    display: grid;
-    grid-template-columns: 2.5ch minmax(0, 1fr) auto;
-    gap: var(--space-md);
-    align-items: baseline;
-    padding-block: var(--space-sm);
-    border-bottom: 1px solid var(--c-line);
-}
-
-.track__index {
-    color: var(--c-muted);
-    font-variant-numeric: tabular-nums;
-}
-
-.track__artist {
-    font-size: var(--fs-100);
-    color: var(--c-muted);
-}
-
-.track__time {
-    color: var(--c-muted);
-    font-variant-numeric: tabular-nums;
-}
-
-
-/* =========================================================
-   09  View Transitions 頁面切換
-   —— 進內頁上滑、回首頁下滑；導覽列與背景釘住不動 ——
-   ========================================================= */
-
-/* 開啟跨文件切換動畫（兩頁共用此檔，兩頁都會生效） */
-@view-transition {
-    navigation: auto;
-}
-
-/* 疊放層級：背景最底、內容中間、導覽列最上 */
-::view-transition-group(bg) {
-    z-index: 0;
-}
-
-::view-transition-group(root) {
-    z-index: 1;
-}
-
-::view-transition-group(nav) {
-    z-index: 100;
-}
-
-/* 導覽列與背景：切換時不動（不淡入淡出、維持連續） */
-::view-transition-old(nav),
-::view-transition-new(nav),
-::view-transition-old(bg),
-::view-transition-new(bg) {
-    animation: none;
-}
-
-/* forward（進內頁）：整頁內容往上滑 */
-html:active-view-transition-type(forward)::view-transition-old(root) {
-    animation: vtSlideUpOut var(--dur) var(--ease-out) both;
-}
-
-html:active-view-transition-type(forward)::view-transition-new(root) {
-    animation: vtSlideUpIn var(--dur) var(--ease-out) both;
-}
-
-/* back（回首頁 / 返回）：整頁內容往下滑 */
-html:active-view-transition-type(back)::view-transition-old(root) {
-    animation: vtSlideDownOut var(--dur) var(--ease-out) both;
-}
-
-html:active-view-transition-type(back)::view-transition-new(root) {
-    animation: vtSlideDownIn var(--dur) var(--ease-out) both;
-}
-
-/* 尊重「減少動態」：直接瞬間切換，不做位移 */
-@media (prefers-reduced-motion: reduce) {
-
-    ::view-transition-group(*),
-    ::view-transition-old(*),
-    ::view-transition-new(*) {
-        animation: none !important;
-    }
-}
-
-/* --- 切換用 keyframes --- */
-@keyframes vtSlideUpIn {
-
-    from {
-        opacity: 0;
-        transform: translateY(var(--vt-shift));
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes vtSlideUpOut {
-
-    from {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    to {
-        opacity: 0;
-        transform: translateY(calc(var(--vt-shift) * -1));
-    }
-}
-
-@keyframes vtSlideDownIn {
-
-    from {
-        opacity: 0;
-        transform: translateY(calc(var(--vt-shift) * -1));
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes vtSlideDownOut {
-
-    from {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    to {
-        opacity: 0;
-        transform: translateY(var(--vt-shift));
-    }
 }

@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>juice.sth</title>
-    <!-- 全站樣式（相對路徑，搬到 /repo/ 也不會壞） -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&display=swap">
     <link rel="stylesheet" href="style.css">
-    <!-- 全站共用 JS：defer 讓它在 DOM 解析完才跑 -->
     <script src="main.js" defer></script>
 </head>
 <body>
-    <!-- 流動漸變背景（純裝飾，對輔助技術隱藏） -->
+    <!-- 流動漸變背景（固定不動，內容在上面左右滑動） -->
     <div class="bg" aria-hidden="true">
         <div class="bg__blobs">
             <span class="bg__blob bg__blob--1"></span>
@@ -20,61 +21,42 @@
         </div>
         <div class="bg__grain"></div>
     </div>
-    <!-- 導覽列 -->
+    <!-- 導覽列：品牌點擊回系列牆 -->
     <header class="nav">
-        <!-- 品牌名：改成你的站名 -->
-        <a class="nav__brand" href="index.html">Selects</a>
-        <!-- 外部連結：把 href 換成你的 IG / Spotify 網址 -->
-        <nav class="nav__links" aria-label="外部連結">
-            <a href="#" target="_blank" rel="noopener">Instagram</a>
-            <a href="#" target="_blank" rel="noopener">Spotify</a>
-        </nav>
+        <button class="glass nav__brand" type="button" data-home>juice.sth</button>
+            <div class="glass menu">
+                <span class="menu__plus" aria-hidden="true">+</span>
+                <div class="menu__links">
+                    <a href="https://www.instagram.com/juice.sth/?hl=en" target="_blank" rel="noopener">instagram</a>
+                    <a href="https://open.spotify.com/user/11157238419?si=534fa33070ce4a01" target="_blank" rel="noopener">spotify</a>
+                </div>
+            </div>
     </header>
-    <main>
-        <section class="hero wrap">
-            <p class="hero__eyebrow">Curated playlists</p>
-            <h1 class="hero__title">聲音的選集</h1>
-            <p class="hero__lede">
-                一句話講你的選曲態度——什麼場景、什麼頻率、什麼心情。
-            </p>
-        </section>
-        <section class="wrap">
-            <div class="section-head">
-                <h2>Playlists</h2>
-                <span class="section-head__count">4 sets</span>
-            </div>
-            <div class="gallery">
-                <!-- 卡片：之後每個 playlist 一張，複製改內容即可 -->
-                <a class="card" href="playlist-demo.html">
-                    <div class="card__cover" style="--cover: linear-gradient(135deg, #b3bd8c, #46503a);"></div>
-                    <div class="card__body">
-                        <h3 class="card__title">Late Night Drive</h3>
-                        <p class="card__meta">32 tracks · 2h 14m</p>
-                    </div>
-                </a>
-                <a class="card" href="playlist-demo.html">
-                    <div class="card__cover" style="--cover: linear-gradient(135deg, #cfd4b8, #6b734a);"></div>
-                    <div class="card__body">
-                        <h3 class="card__title">Sunday Reset</h3>
-                        <p class="card__meta">24 tracks · 1h 38m</p>
-                    </div>
-                </a>
-                <a class="card" href="playlist-demo.html">
-                    <div class="card__cover" style="--cover: linear-gradient(135deg, #909964, #34382c);"></div>
-                    <div class="card__body">
-                        <h3 class="card__title">Concrete Bloom</h3>
-                        <p class="card__meta">18 tracks · 1h 05m</p>
-                    </div>
-                </a>
-                <a class="card" href="playlist-demo.html">
-                    <div class="card__cover" style="--cover: linear-gradient(135deg, #a7b083, #52563a);"></div>
-                    <div class="card__body">
-                        <h3 class="card__title">After Hours</h3>
-                        <p class="card__meta">40 tracks · 2h 47m</p>
-                    </div>
-                </a>
-            </div>
-        </section>
+    <!-- 舞台：固定視窗大小、裁掉水平溢出 -->
+    <main class="stage">
+        <!-- 軌道：三面板並排，靠 --level 左右位移 -->
+        <div class="track" id="track">
+            <!-- 面板 0：系列牆（封面散佈） -->
+            <section class="panel" aria-label="所有系列">
+                <div class="scatter" id="scatter"></div>
+            </section>
+            <!-- 面板 1：該系列的所有 Volume -->
+            <section class="panel" aria-label="Volume 列表">
+                <header class="panel__head">
+                    <button class="back" type="button" data-back aria-label="返回系列牆">←</button>
+                    <h2 class="panel__title" id="seriesTitle"></h2>
+                </header>
+                <div class="volumes" id="volumes"></div>
+            </section>
+            <!-- 面板 2：Spotify 播放器 -->
+            <section class="panel" aria-label="播放器">
+                <header class="panel__head">
+                    <button class="back" type="button" data-back aria-label="返回 Volume 列表">←</button>
+                    <h2 class="panel__title" id="volumeTitle"></h2>
+                </header>
+                <div class="player" id="player"></div>
+            </section>
+        </div>
     </main>
 </body>
 </html>
