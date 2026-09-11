@@ -720,13 +720,13 @@ img, video {
     }
 
     .detail__player iframe {
-        height: 340px;   /* 播放器高度（拉長） */
+        height: 400px;   /* 播放器高度（拉長） */
     }
 
     /* Volume 列表：一次最多約 4 行，超過就在列表內捲動 */
     .detail__list {
         height: auto;
-        max-height: 15rem;
+        max-height: 11rem;
         overflow-y: auto;
     }
 }

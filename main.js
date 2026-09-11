@@ -144,6 +144,7 @@ function renderScatter() {
         btn.addEventListener("blur", syncPalette);
 
         scatterEl.appendChild(btn);
+        wallObserver.observe(btn);
     });
 }
 
@@ -296,14 +297,21 @@ function clearPalette() {
 
 let committedSeriesId = null;   // 已進入的系列（決定內頁底色）
 let currentSeries = null;   // 目前開啟的系列
+let visibleSeriesId = null;   // 手機系列牆目前置中的封面
 
 // 依目前狀態還原底色：內頁 → 該系列主題色；首頁 → 預設
 function syncPalette() {
     if (committedSeriesId) {
         applyPalette(committedSeriesId);
+    } else if (isMobile() && visibleSeriesId) {
+        applyPalette(visibleSeriesId);   // 手機系列牆：跟著目前置中的封面
     } else {
         clearPalette();
     }
+}
+
+function isMobile() {
+    return window.matchMedia("(max-width: 700px)").matches;
 }
 
 
@@ -413,6 +421,19 @@ document.addEventListener("keydown", function (e) {
 window.addEventListener("hashchange", function () {
     applyRoute(false);
 });
+
+// 手機系列牆：偵測目前置中的封面 → 背景跟著變色
+const wallObserver = new IntersectionObserver(function (entries) {
+    if (!isMobile() || level !== 0) {
+        return;
+    }
+    entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+            visibleSeriesId = entry.target.dataset.series;
+            syncPalette();
+        }
+    });
+}, { root: scatterEl, rootMargin: "-45% 0px -45% 0px", threshold: 0 });
 
 renderScatter();
 applyRoute(true);
